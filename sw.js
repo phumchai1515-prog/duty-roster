@@ -1,11 +1,17 @@
 /**
  * sw.js — Service Worker
  *
- * กลยุทธ์: cache เฉพาะไฟล์หน้าเว็บ (shell) ไว้เปิดออฟไลน์ได้
- * ส่วนข้อมูลเวรจาก Supabase ไม่ cache เด็ดขาด เพราะตารางเวรที่ค้างอยู่
+ * กลยุทธ์: **network-first ทุกไฟล์** แล้วค่อยตกมาใช้ cache เมื่อออฟไลน์
+ *
+ * ทำไมไม่ใช้ cache-first ที่เร็วกว่า: โปรเจกต์นี้ไม่มี build step ชื่อไฟล์จึงไม่มี
+ * hash ต่อท้าย ถ้า cache ไว้ก่อน ผู้ใช้จะได้โค้ดเก่าทุกครั้งที่ deploy
+ * โดยเฉพาะ env.js ที่เก็บค่าเชื่อมต่อฐานข้อมูล — เคยทำให้เว็บขึ้น
+ * "ยังไม่ได้ตั้งค่าระบบ" ทั้งที่ตั้งค่าไปแล้ว
+ *
+ * ข้อมูลเวรจาก Supabase ไม่ cache เด็ดขาด เพราะตารางเวรที่ค้างอยู่
  * อาจทำให้จองซ้ำหรือเข้าใจผิดว่าวันนั้นยังว่าง
  */
-const CACHE_VERSION = 'duty-roster-v1';
+const CACHE_VERSION = 'duty-roster-v2';
 
 const SHELL_FILES = [
   './',
@@ -70,31 +76,19 @@ self.addEventListener('fetch', (event) => {
   // ข้อมูลจาก Supabase และ CDN ต้องสดเสมอ ปล่อยผ่านไปเครือข่ายตรงๆ
   if (url.origin !== self.location.origin) return;
 
-  // หน้าเว็บ: ลองเครือข่ายก่อน ถ้าไม่ได้ค่อยใช้ cache แล้วค่อยตกไปหน้า offline
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
-          return response;
-        })
-        .catch(() => caches.match(request).then((cached) => cached ?? caches.match('offline.html'))),
-    );
-    return;
-  }
-
-  // ไฟล์ static: ใช้ cache ก่อนเพื่อความเร็ว แล้วอัปเดตเบื้องหลัง
+  // network-first: เอาไฟล์สดเสมอเมื่อออนไลน์ แล้วเก็บสำเนาไว้เผื่อออฟไลน์
   event.respondWith(
-    caches.match(request).then((cached) => {
-      const network = fetch(request).then((response) => {
+    fetch(request)
+      .then((response) => {
         if (response.ok) {
           const copy = response.clone();
           caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
         }
         return response;
-      }).catch(() => cached);
-      return cached ?? network;
-    }),
+      })
+      .catch(() => caches.match(request).then((cached) => {
+        if (cached) return cached;
+        return request.mode === 'navigate' ? caches.match('offline.html') : Response.error();
+      })),
   );
 });
