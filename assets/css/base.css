@@ -421,6 +421,13 @@ table.data tbody tr:hover { background: var(--t-50); }
 /* ============================================================
    Responsive
    ============================================================ */
+@media (max-width: 780px) {
+  /* บนมือถือ ปุ่มทุกอันต้องแตะได้อย่างน้อย 44px ตามเกณฑ์การเข้าถึง */
+  .icon-btn { width: 44px; height: 44px; }
+  .btn-icon { width: 44px; }
+  .btn, .btn-sm { min-height: 44px; }
+}
+
 @media (max-width: 720px) {
   .masthead-inner { padding: var(--s-2) var(--s-3); gap: var(--s-2); }
   .crest { width: 34px; height: 34px; }
