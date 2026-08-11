@@ -2,7 +2,7 @@
 import { isConfigured, humanError, getClient } from './supabase.js';
 import { requireSession, renderShell, renderSetupNotice, toast, escapeHtml, applyStoredTheme } from './ui.js';
 import { loadWorkloadSummary } from './shifts.js';
-import { loadMonthSetting, saveMonthSetting } from './month-settings.js';
+import { loadMonthSetting, saveMonthSetting, loadBookingStatus, autoFillMonth } from './month-settings.js';
 import {
   formatThaiDateShort, toBuddhistYear, toGregorianYear, todayKey,
   parseDateKey, dateKey, DOW_TH, dayOfWeek, MONTHS_TH,
@@ -22,7 +22,11 @@ const dom = {
   msOffOpen: document.getElementById('ms-off-open'),
   msLocked: document.getElementById('ms-locked'),
   msNote: document.getElementById('ms-note'),
+  msAutoFill: document.getElementById('ms-autofill'),
+  msAutoFillStatus: document.getElementById('ms-autofill-status'),
+  msFillNow: document.getElementById('ms-fill-now'),
   msSave: document.getElementById('ms-save'),
+  statusPanel: document.getElementById('status-panel'),
   // เพิ่มพยาบาล
   addForm: document.getElementById('add-form'),
   addError: document.getElementById('add-error'),
@@ -81,6 +85,15 @@ function fillMonthSelectors() {
     .join('');
 }
 
+/** แปลง timestamptz จากฐานข้อมูล → ค่าที่ <input type="datetime-local"> รับได้ (เวลาเครื่องผู้ใช้) */
+function toLocalInput(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+       + `T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 async function loadMonthForm() {
   try {
     const setting = await loadMonthSetting(selectedYear(), selectedMonth());
@@ -88,8 +101,48 @@ async function loadMonthForm() {
     dom.msOffOpen.checked = Boolean(setting.off_booking_open);
     dom.msLocked.checked = Boolean(setting.shifts_locked);
     dom.msNote.value = setting.note ?? '';
+    dom.msAutoFill.value = toLocalInput(setting.auto_fill_at);
+
+    dom.msAutoFillStatus.textContent = setting.auto_filled_at
+      ? `เติมอัตโนมัติไปแล้วเมื่อ ${new Date(setting.auto_filled_at).toLocaleString('th-TH')}`
+      : (setting.auto_fill_at ? 'ยังไม่ถึงกำหนด' : '');
   } catch (error) {
     showAlert(humanError(error, 'โหลดการตั้งค่าเดือนไม่สำเร็จ'));
+  }
+}
+
+/** แผงสถานะการจองของเดือนที่เลือก */
+async function refreshStatus() {
+  dom.statusPanel.innerHTML = '<p class="empty">กำลังโหลด…</p>';
+  try {
+    const s = await loadBookingStatus(selectedYear(), selectedMonth());
+    const emptyBlock = s.empty_days
+      ? `<div class="alert warn">
+           <div><strong>ยังไม่มีผู้จอง ${s.empty_days} วัน</strong><br>
+           <span class="caption">วันที่ ${escapeHtml(s.empty_list)}</span></div>
+         </div>`
+      : '<div class="alert success"><div><strong>จองครบทุกวันแล้ว</strong></div></div>';
+
+    const noneBlock = s.nurses_none
+      ? `<div class="alert warn">
+           <div><strong>ยังไม่จองเลย ${s.nurses_none} คน</strong><br>
+           <span class="caption">${escapeHtml(s.none_list)}</span></div>
+         </div>`
+      : '<div class="alert success"><div><strong>ทุกคนจองแล้วอย่างน้อย 1 เวร</strong></div></div>';
+
+    dom.statusPanel.innerHTML = `
+      <div class="row" style="gap:24px">
+        <div><strong style="font-size:22px">${s.filled_days}/${s.total_days}</strong>
+             <span class="caption"> วันที่มีผู้ปฏิบัติงาน</span></div>
+        <div><strong style="font-size:22px">${s.nurses_at_quota}/${s.nurses_total}</strong>
+             <span class="caption"> คนจองครบโควตา (${s.quota} เวร)</span></div>
+      </div>
+      ${emptyBlock}
+      ${noneBlock}
+    `;
+  } catch (error) {
+    dom.statusPanel.innerHTML = '';
+    showAlert(humanError(error, 'โหลดสถานะการจองไม่สำเร็จ'));
   }
 }
 
@@ -108,8 +161,10 @@ async function saveMonthForm() {
       shiftsLocked: dom.msLocked.checked,
       offBookingOpen: dom.msOffOpen.checked,
       note: dom.msNote.value.trim() || null,
+      autoFillAt: dom.msAutoFill.value ? new Date(dom.msAutoFill.value).toISOString() : null,
     });
     toast('บันทึกการตั้งค่าแล้ว', 'success');
+    await loadMonthForm();
   } catch (error) {
     toast(humanError(error, 'บันทึกไม่สำเร็จ'), 'error');
   } finally {
@@ -345,8 +400,35 @@ async function exportYearCsv() {
 
 // ---------- Event ----------
 
-dom.msMonth.addEventListener('change', loadMonthForm);
-dom.msYear.addEventListener('change', loadMonthForm);
+/** เติมเวรที่ว่างทันที แล้วรายงานว่าใครได้วันไหน */
+async function fillNow() {
+  if (!window.confirm(
+    'ให้ระบบเติมเวรที่ยังว่างของเดือนนี้เลยหรือไม่?\n\n'
+    + 'ระบบจะเลือกคนให้อัตโนมัติ โดยข้ามคนที่แจ้ง OFF\n'
+    + 'ผู้ที่ถูกจัดให้จะเห็นว่าเป็นเวรที่ระบบเติมให้')) return;
+
+  dom.msFillNow.disabled = true;
+  dom.msFillNow.textContent = 'กำลังเติม…';
+  try {
+    const rows = await autoFillMonth(selectedYear(), selectedMonth());
+    if (!rows.length) {
+      toast('ไม่มีวันว่างให้เติม หรือไม่มีผู้ที่ว่างพอ', 'error');
+    } else {
+      toast(`เติมให้แล้ว ${rows.length} วัน`, 'success');
+    }
+    await Promise.all([loadMonthForm(), refreshStatus(), refresh()]);
+  } catch (error) {
+    toast(humanError(error, 'เติมเวรไม่สำเร็จ'), 'error');
+  } finally {
+    dom.msFillNow.disabled = false;
+    dom.msFillNow.textContent = 'เติมเวรที่ว่างเลยตอนนี้';
+  }
+}
+
+const onMonthChange = () => Promise.all([loadMonthForm(), refreshStatus()]);
+dom.msMonth.addEventListener('change', onMonthChange);
+dom.msYear.addEventListener('change', onMonthChange);
+dom.msFillNow.addEventListener('click', fillNow);
 dom.msSave.addEventListener('click', saveMonthForm);
 dom.addForm.addEventListener('submit', addNurse);
 dom.exportBtn.addEventListener('click', exportYearCsv);
@@ -445,7 +527,7 @@ async function boot() {
   await enforcePinChange(session);
 
   fillMonthSelectors();
-  await Promise.all([loadMonthForm(), refresh()]);
+  await Promise.all([loadMonthForm(), refreshStatus(), refresh()]);
 }
 
 boot().catch((error) => showAlert(humanError(error, 'เปิดหน้าไม่สำเร็จ')));

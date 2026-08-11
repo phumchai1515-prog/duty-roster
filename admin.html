@@ -65,11 +65,37 @@
         <label for="ms-note">ข้อความแจ้งบนปฏิทิน (ไม่บังคับ)</label>
         <input id="ms-note" type="text" maxlength="120" placeholder="เช่น กรุณาจองให้ครบภายในวันที่ 20">
       </div>
+
+      <div class="field">
+        <label for="ms-autofill">เติมเวรที่ยังว่างอัตโนมัติเมื่อ</label>
+        <input id="ms-autofill" type="datetime-local">
+        <p class="field-hint">
+          ถึงเวลานี้แล้ว วันที่ยังไม่มีใครจองจะถูกเติมให้อัตโนมัติ
+          โดยข้ามคนที่แจ้ง OFF · เลือกคนที่ยังจองไม่ครบโควตาก่อน · เลี่ยงเวรติดกัน ·
+          กระจายเวรวันหยุดให้เป็นธรรม<br>
+          <strong>เว้นว่างไว้ = ไม่เติมอัตโนมัติ</strong>
+        </p>
+        <p class="field-hint" id="ms-autofill-status"></p>
+      </div>
     </div>
 
     <div class="row" style="margin-top:16px">
+      <button class="btn" id="ms-fill-now" type="button">เติมเวรที่ว่างเลยตอนนี้</button>
       <div class="spacer"></div>
       <button class="btn btn-primary" id="ms-save" type="button">บันทึกการตั้งค่าเดือนนี้</button>
+    </div>
+  </section>
+
+  <!-- ========== สถานะการจองของเดือนที่เลือก ========== -->
+  <section class="card" aria-labelledby="status-title">
+    <div class="card-head">
+      <div>
+        <h2 id="status-title">สถานะการจองเดือนที่เลือก</h2>
+        <p class="caption">ดูก่อนถึงกำหนด จะได้ทวงคนที่ยังไม่จองได้ทัน</p>
+      </div>
+    </div>
+    <div id="status-panel" class="stack">
+      <p class="empty">กำลังโหลด…</p>
     </div>
   </section>
 

@@ -33,6 +33,8 @@ export async function loadMonthSetting(year, month) {
     shifts_locked: false,
     off_booking_open: false,
     note: null,
+    auto_fill_at: null,
+    auto_filled_at: null,
   };
 }
 
@@ -47,6 +49,7 @@ export async function saveMonthSetting(year, month, changes) {
       shifts_locked: changes.shiftsLocked,
       off_booking_open: changes.offBookingOpen,
       note: changes.note ?? null,
+      auto_fill_at: changes.autoFillAt || null,
       updated_at: new Date().toISOString(),
     }, { onConflict: 'year_be,month' });
 
@@ -63,4 +66,24 @@ export async function loadSettingsRange(fromYearBe, toYearBe) {
 
   if (error) throw error;
   return new Map((data ?? []).map((row) => [`${row.year_be}-${row.month}`, row]));
+}
+
+/** สถานะการจองของเดือน — ผู้ดูแลใช้ดูว่าเหลือวันว่างกี่วัน ใครยังไม่จอง */
+export async function loadBookingStatus(year, month) {
+  const { data, error } = await getClient().rpc('month_booking_status', {
+    p_year_be: toBuddhistYear(year),
+    p_month: month,
+  });
+  if (error) throw error;
+  return Array.isArray(data) ? data[0] : data;
+}
+
+/** เติมเวรที่ยังว่างให้ทันที (เฉพาะผู้ดูแล) — คืนรายการที่เติม */
+export async function autoFillMonth(year, month) {
+  const { data, error } = await getClient().rpc('auto_fill_month', {
+    p_year_be: toBuddhistYear(year),
+    p_month: month,
+  });
+  if (error) throw error;
+  return data ?? [];
 }

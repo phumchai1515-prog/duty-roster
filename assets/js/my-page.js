@@ -50,6 +50,7 @@ function groupByDay(shifts) {
     groups.set(shift.duty_date, {
       dutyDate: shift.duty_date,
       status: shift.status,
+      assignedBySystem: shift.assigned_by_system || existing?.assignedBySystem || false,
       ids: [...(existing?.ids ?? []), shift.id],
     });
   }
@@ -83,7 +84,9 @@ function renderUpcoming(groups, outgoing) {
         <td>${dateCell(group.dutyDate)}</td>
         <td class="mono">${DUTY_SLOT.label}</td>
         <td>
-          <span class="pill ${STATUS_PILL[group.status]}">${STATUS_LABEL[group.status]}</span>
+          ${group.assignedBySystem
+            ? '<span class="pill info">ระบบจัดให้</span>'
+            : `<span class="pill ${STATUS_PILL[group.status]}">${STATUS_LABEL[group.status]}</span>`}
           ${swap ? `<br><span class="pill info">รอ ${escapeHtml(swap.to_nurse?.full_name ?? '')} ตอบรับ</span>` : ''}
         </td>
         <td><div class="row" style="flex-wrap:wrap">${actions}</div></td>
@@ -101,7 +104,9 @@ function renderHistory(groups) {
     <tr>
       <td>${dateCell(group.dutyDate)}</td>
       <td class="mono">${DUTY_SLOT.label}</td>
-      <td><span class="pill ${STATUS_PILL[group.status]}">${STATUS_LABEL[group.status]}</span></td>
+      <td>${group.assignedBySystem
+        ? '<span class="pill info">ระบบจัดให้</span>'
+        : `<span class="pill ${STATUS_PILL[group.status]}">${STATUS_LABEL[group.status]}</span>`}</td>
     </tr>
   `).join('');
 }

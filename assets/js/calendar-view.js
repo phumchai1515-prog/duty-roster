@@ -62,8 +62,10 @@ function dayCell({ year, month, day, key, dayShifts, holidayName, offList, curre
         <span class="day-avatar" aria-hidden="true">${escapeHtml(initialsOf(name))}</span>
         <span class="day-owner">${escapeHtml(name)}</span>
       </span>`;
-    footer = `<span class="pill ${STATUS_PILL[shift.status]}">${STATUS_LABEL[shift.status]}</span>`;
-    ariaLabel = `วันที่ ${day} ${name} ${STATUS_LABEL[shift.status]}`;
+    footer = shift.assigned_by_system
+      ? '<span class="pill info">ระบบจัดให้</span>'
+      : `<span class="pill ${STATUS_PILL[shift.status]}">${STATUS_LABEL[shift.status]}</span>`;
+    ariaLabel = `วันที่ ${day} ${name} ${shift.assigned_by_system ? 'ระบบจัดให้' : STATUS_LABEL[shift.status]}`;
   } else {
     footer = `<span class="day-free">${icon('plus', { size: 12 })}ว่าง</span>`;
     ariaLabel = `วันที่ ${day} ยังไม่มีผู้จองเวร กดเพื่อจอง`;
@@ -175,7 +177,11 @@ export function renderSlotRows(dayShifts = {}, offList = []) {
             ? escapeHtml(shift.nurse?.full_name ?? '—')
             : '<span class="muted">ยังไม่มีผู้ปฏิบัติงาน</span>'
         }</span>
-        ${shift ? `<span class="pill ${STATUS_PILL[shift.status]}">${STATUS_LABEL[shift.status]}</span>` : ''}
+        ${shift
+          ? (shift.assigned_by_system
+              ? '<span class="pill info">ระบบจัดให้</span>'
+              : `<span class="pill ${STATUS_PILL[shift.status]}">${STATUS_LABEL[shift.status]}</span>`)
+          : ''}
       </div>
       ${offNames.length ? `
         <div class="slot-row">

@@ -11,7 +11,7 @@
  * ข้อมูลเวรจาก Supabase ไม่ cache เด็ดขาด เพราะตารางเวรที่ค้างอยู่
  * อาจทำให้จองซ้ำหรือเข้าใจผิดว่าวันนั้นยังว่าง
  */
-const CACHE_VERSION = 'duty-roster-v4';
+const CACHE_VERSION = 'duty-roster-v5';
 
 const SHELL_FILES = [
   './',

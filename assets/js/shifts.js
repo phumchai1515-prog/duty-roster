@@ -7,7 +7,7 @@ import { BOOKABLE_SLOTS } from './config.js';
 import { dateKey, daysInMonth } from './thai.js';
 
 const SHIFT_FIELDS = `
-  id, duty_date, slot, status, note,
+  id, duty_date, slot, status, note, assigned_by_system,
   nurse:nurses!shifts_nurse_id_fkey ( id, full_name, is_admin )
 `;
 
