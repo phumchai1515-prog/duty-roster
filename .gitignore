@@ -16,3 +16,4 @@ node_modules/
 # ข้อมูลบุคคล — สร้างใหม่ได้ด้วย scripts/generate-seed.py จากไฟล์ .xlsx ต้นฉบับ
 # ถ้า repo เป็น private และต้องการให้ทีมใช้ร่วมกัน ลบบรรทัดนี้ออกได้
 supabase/04_seed.sql
+supabase/INSTALL_ALL.sql

@@ -6,7 +6,7 @@
  * ห้ามใส่ service_role key ที่นี่เด็ดขาด
  */
 window.__DUTY_CONFIG__ = {
-  supabaseUrl: '',
-  supabaseAnonKey: '',
+  supabaseUrl: 'https://ogamyepqxgxjkkicmwmk.supabase.co',
+  supabaseAnonKey: 'sb_publishable_DUqD7tDyRPZhnaqit0-VOg_i_-G9lUk',
   authEmailDomain: 'duty.example.com',
 };

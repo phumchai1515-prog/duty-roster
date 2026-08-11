@@ -2,7 +2,8 @@
  * supabase.js — สร้าง client ตัวเดียวใช้ร่วมทุกหน้า
  * ถ้ายังไม่ได้ตั้งค่า env.js จะโยน ConfigError ให้หน้าเรียกจัดการเอง
  */
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
+// ใช้ช่วงเวอร์ชัน 2.x ล่าสุด เพราะต้องรองรับคีย์รูปแบบใหม่ (sb_publishable_…)
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 
 export class ConfigError extends Error {
