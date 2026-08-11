@@ -60,7 +60,9 @@ create policy shifts_self_insert on public.shifts
   with check (
     nurse_id = public.current_nurse_id()
     and status = 'pending'
-    and duty_date >= current_date
+    -- ใช้เวลาไทยชัดเจน ไม่พึ่ง current_date ที่อิง UTC
+    -- มิฉะนั้นช่วง 00.00-07.00 น. ตามเวลาไทย จะยังนับเป็นเมื่อวานฝั่งเซิร์ฟเวอร์
+    and duty_date >= (now() at time zone 'Asia/Bangkok')::date
   );
 
 -- แก้ไขได้เฉพาะเวรตัวเองที่ยังไม่ถูกอนุมัติ และห้ามเปลี่ยนสถานะเอง

@@ -141,7 +141,9 @@ function openSheet(key) {
   } else if (isMine) {
     mode = 'cancel';
     confirmLabel = 'ยกเลิกการจอง';
-    hint = '<div class="alert warn">นี่คือเวรของคุณที่ยังรออนุมัติ</div>';
+    hint = shift.status === 'approved'
+      ? '<div class="alert warn">เวรนี้อนุมัติแล้ว การยกเลิกจะทำให้วันนี้ไม่มีผู้ปฏิบัติงาน</div>'
+      : '<div class="alert warn">นี่คือเวรของคุณที่ยังรออนุมัติ</div>';
   } else if (isPast) {
     hint = '<div class="alert warn">จองย้อนหลังไม่ได้ หากต้องบันทึกย้อนหลัง กรุณาแจ้งหัวหน้าเวร</div>';
     confirmDisabled = true;
