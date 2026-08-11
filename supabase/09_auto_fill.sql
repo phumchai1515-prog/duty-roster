@@ -31,6 +31,38 @@ comment on column public.shifts.assigned_by_system is
   'true = ระบบเติมให้อัตโนมัติ ไม่ใช่เจ้าตัวกดจองเอง — ต้องแสดงให้ผู้ใช้เห็นชัด';
 
 
+-- ---------- แก้ month_setting ให้ทนต่อการเพิ่มคอลัมน์ ----------
+-- ของเดิมใช้ row(...)::month_settings ซึ่งพังทันทีที่ตารางมีคอลัมน์เพิ่ม
+-- (เพิ่ม auto_fill_at / auto_filled_at ในไฟล์นี้) จึงเปลี่ยนมากำหนดทีละฟิลด์
+create or replace function public.month_setting(p_year_be integer, p_month integer)
+returns public.month_settings
+language plpgsql stable security definer set search_path = public
+as $$
+declare
+  r public.month_settings;
+begin
+  select * into r
+    from public.month_settings m
+   where m.year_be = p_year_be and m.month = p_month;
+
+  if found then
+    return r;
+  end if;
+
+  r.year_be          := p_year_be;
+  r.month            := p_month;
+  r.shift_quota      := public.default_shift_quota(p_month);
+  r.shifts_locked    := false;
+  r.off_booking_open := false;
+  r.note             := null;
+  r.updated_at       := now();
+  r.auto_fill_at     := null;
+  r.auto_filled_at   := null;
+  return r;
+end $$;
+
+grant execute on function public.month_setting(integer, integer) to authenticated;
+
 -- ============================================================
 -- ฟังก์ชันหลัก (ภายใน) — ไม่ตรวจสิทธิ์ เพราะ cron ต้องเรียกได้ด้วย
 -- ============================================================
