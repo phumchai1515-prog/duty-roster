@@ -69,11 +69,11 @@
 .mode-btn small { font-weight: 400; font-size: 11px; color: var(--muted); }
 .mode-btn:hover { border-color: var(--t-400); background: var(--t-50); }
 .mode-btn[aria-pressed="true"] {
-  background: linear-gradient(180deg, var(--t-600), var(--t-700));
-  border-color: var(--t-800); color: #fff;
-  box-shadow: 0 1px 0 rgba(255,255,255,.15) inset, 0 6px 16px -10px var(--t-700);
+  background: linear-gradient(180deg, var(--brand-from), var(--brand-to));
+  border-color: var(--brand-to); color: var(--on-brand);
+  box-shadow: 0 1px 0 rgba(255,255,255,.14) inset, 0 6px 16px -10px var(--brand-to);
 }
-.mode-btn[aria-pressed="true"] small { color: rgba(255,255,255,.8); }
+.mode-btn[aria-pressed="true"] small { color: rgba(255,255,255,.78); }
 
 /* ---------- คำอธิบายสัญลักษณ์ ---------- */
 .legend {

@@ -32,8 +32,8 @@
 .login-head {
   text-align: center;
   padding: var(--s-6) var(--s-5) var(--s-5);
-  background: linear-gradient(180deg, var(--t-800), var(--t-700) 70%, var(--t-600));
-  color: #fff;
+  background: linear-gradient(180deg, var(--bar-from), var(--bar-to));
+  color: var(--on-brand);
   position: relative;
 }
 .login-head::after {

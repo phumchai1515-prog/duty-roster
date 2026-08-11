@@ -60,9 +60,8 @@ a { color: var(--t-600); text-underline-offset: 3px; }
    ============================================================ */
 .masthead {
   position: sticky; top: 0; z-index: 60;
-  background:
-    linear-gradient(180deg, var(--t-800), var(--t-700) 62%, var(--t-600));
-  color: #fff;
+  background: linear-gradient(180deg, var(--bar-from), var(--bar-to));
+  color: var(--on-brand);
   box-shadow: 0 1px 0 rgba(0,0,0,.12), 0 10px 30px -22px rgba(0,0,0,.7);
 }
 
@@ -129,7 +128,7 @@ a { color: var(--t-600); text-underline-offset: 3px; }
   border-radius: var(--r);
   border: 1px solid rgba(255,255,255,.18);
   background: rgba(255,255,255,.08);
-  color: #fff; cursor: pointer;
+  color: var(--on-brand); cursor: pointer;
   transition: background var(--dur) var(--ease);
 }
 .icon-btn:hover { background: rgba(255,255,255,.18); }
@@ -223,11 +222,13 @@ main {
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 
 .btn-primary {
-  background: linear-gradient(180deg, var(--t-600), var(--t-700));
-  color: #fff; border-color: var(--t-800);
-  box-shadow: 0 1px 0 rgba(255,255,255,.15) inset, 0 6px 16px -10px var(--t-700);
+  background: linear-gradient(180deg, var(--brand-from), var(--brand-to));
+  color: var(--on-brand); border-color: var(--brand-to);
+  box-shadow: 0 1px 0 rgba(255,255,255,.14) inset, 0 6px 16px -10px var(--brand-to);
 }
-.btn-primary:hover:not(:disabled) { color: #fff; border-color: var(--t-900); filter: brightness(1.06); }
+.btn-primary:hover:not(:disabled) {
+  color: var(--on-brand); border-color: var(--brand-to); filter: brightness(1.12);
+}
 
 .btn-gold {
   background: linear-gradient(180deg, var(--gold-500), var(--gold-600));
