@@ -3,7 +3,7 @@
  * ทุกฟังก์ชันคืนค่าเป็นออบเจ็กต์ใหม่เสมอ ไม่แก้ข้อมูลเดิมในที่เดิม
  */
 import { getClient } from './supabase.js';
-import { PAIRED_SLOTS } from './config.js';
+import { BOOKABLE_SLOTS } from './config.js';
 import { dateKey, daysInMonth } from './thai.js';
 
 const SHIFT_FIELDS = `
@@ -51,10 +51,10 @@ export async function loadMonthHolidays(year, month) {
 }
 
 /**
- * จองเวร — ค่าตั้งต้นคือจองเวรบ่าย+ดึกพร้อมกัน (คนเดียวอยู่ยาว 16 ชม.)
- * ถ้าช่วงใดช่วงหนึ่งถูกจองไปแล้ว ฐานข้อมูลจะปฏิเสธทั้งชุด
+ * จองเวรตรวจการของวันนั้น (ช่วง 16.30 - 00.30 น.)
+ * ถ้ามีคนจองไปแล้ว ฐานข้อมูลจะปฏิเสธด้วย unique constraint
  */
-export async function bookShift(dutyDateKey, { slots = PAIRED_SLOTS, note = null } = {}) {
+export async function bookShift(dutyDateKey, { slots = BOOKABLE_SLOTS, note = null } = {}) {
   const { data, error } = await getClient().rpc('book_shift', {
     p_duty_date: dutyDateKey,
     p_slots: [...slots],

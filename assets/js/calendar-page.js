@@ -7,7 +7,7 @@ import { requireSession, renderShell, renderSetupNotice, toast, escapeHtml, appl
 import { loadMonthShifts, loadMonthHolidays, bookShift, cancelShifts, subscribeToShifts } from './shifts.js';
 import { renderMonthGrid, monthSummary, renderSlotRows, primaryShift, shiftIdsOwnedBy } from './calendar-view.js';
 import { formatThaiMonthYear, formatThaiDateFull, todayKey, shiftMonth, parseDateKey, DOW_TH, dayOfWeek } from './thai.js';
-import { PAIRED_SLOTS, DAY_SLOT_HOLIDAY_ONLY, RULES } from './config.js';
+import { BOOKABLE_SLOTS, DUTY_SLOT, RULES } from './config.js';
 import { enforcePinChange } from './pin-gate.js';
 
 applyStoredTheme();
@@ -86,13 +86,6 @@ function scheduleRefresh() {
 
 // ---------- กล่องยืนยัน ----------
 
-/** เวรเช้าเปิดจองเฉพาะวันหยุดราชการ ตามการปฏิบัติจริง */
-function slotsToBook(key) {
-  return state.holidays.has(key) || !DAY_SLOT_HOLIDAY_ONLY
-    ? ['day', ...PAIRED_SLOTS]
-    : [...PAIRED_SLOTS];
-}
-
 /** นับจำนวนคืนติดกันที่พยาบาลคนนี้จองไว้รอบๆ วันที่กำหนด */
 function consecutiveNights(key) {
   const { year, month, day } = parseDateKey(key);
@@ -148,9 +141,8 @@ function openSheet(key) {
     hint = '<div class="alert warn">จองย้อนหลังไม่ได้ หากต้องบันทึกย้อนหลัง กรุณาแจ้งหัวหน้าเวร</div>';
     confirmDisabled = true;
   } else {
-    const slots = slotsToBook(key);
     const streak = consecutiveNights(key);
-    hint = `<div class="alert info">จะจอง ${slots.length} ช่วงเวลาพร้อมกัน (${slots.includes('day') ? 'เช้า+บ่าย+ดึก' : 'บ่าย+ดึก'})</div>`;
+    hint = `<div class="alert info">จะจองเวรตรวจการ ${DUTY_SLOT.label}</div>`;
     if (streak >= RULES.consecutiveWarnAt) {
       hint += `<div class="alert warn">คุณจะอยู่เวรติดกัน ${streak} คืน กรุณาพิจารณาความปลอดภัยในการปฏิบัติงาน</div>`;
     }
@@ -187,7 +179,7 @@ async function confirmSheet() {
       await cancelShifts(ids);
       toast('ยกเลิกการจองแล้ว', 'success');
     } else {
-      await bookShift(key, { slots: slotsToBook(key) });
+      await bookShift(key, { slots: BOOKABLE_SLOTS });
       toast('จองเวรสำเร็จ รอหัวหน้าอนุมัติ', 'success');
     }
     closeSheet();

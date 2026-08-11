@@ -18,7 +18,7 @@ const dom = {
   approveMonthBtn: document.getElementById('approve-month-btn'),
 };
 
-const SLOT_SHORT = new Map(SLOTS.map((slot) => [slot.key, slot.short]));
+const SLOT_LABEL = new Map(SLOTS.map((slot) => [slot.key, slot.label]));
 
 let session = null;
 
@@ -61,7 +61,7 @@ function renderPending(groups) {
           ${isPast ? '<br><span class="pill danger">เลยวันไปแล้ว</span>' : ''}
         </td>
         <td>${escapeHtml(group.nurse?.full_name ?? '—')}</td>
-        <td>${group.slots.map((slot) => SLOT_SHORT.get(slot) ?? slot).join(' + ')}</td>
+        <td>${group.slots.map((slot) => SLOT_LABEL.get(slot) ?? slot).join(' · ')}</td>
         <td>
           <div class="row" style="flex-wrap:nowrap">
             <button class="btn btn-sm btn-primary" data-action="approve" data-ids="${group.ids.join(',')}">อนุมัติ</button>

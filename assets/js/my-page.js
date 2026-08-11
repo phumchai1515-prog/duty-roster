@@ -28,7 +28,7 @@ const dom = {
   swapCancel: document.getElementById('swap-cancel'),
 };
 
-const SLOT_SHORT = new Map(SLOTS.map((slot) => [slot.key, slot.short]));
+const SLOT_LABEL = new Map(SLOTS.map((slot) => [slot.key, slot.label]));
 const HISTORY_LIMIT = 30;
 
 let session = null;
@@ -86,7 +86,7 @@ function renderUpcoming(groups, outgoing) {
     return `
       <tr>
         <td>${dateCell(group.dutyDate)}</td>
-        <td>${group.slots.map((slot) => SLOT_SHORT.get(slot) ?? slot).join(' + ')}</td>
+        <td>${group.slots.map((slot) => SLOT_LABEL.get(slot) ?? slot).join(' · ')}</td>
         <td>
           <span class="pill ${STATUS_PILL[group.status]}">${STATUS_LABEL[group.status]}</span>
           ${swap ? `<br><span class="pill info">รอ ${escapeHtml(swap.to_nurse?.full_name ?? '')} ตอบรับ</span>` : ''}
@@ -105,7 +105,7 @@ function renderHistory(groups) {
   dom.history.innerHTML = groups.slice(0, HISTORY_LIMIT).map((group) => `
     <tr>
       <td>${dateCell(group.dutyDate)}</td>
-      <td>${group.slots.map((slot) => SLOT_SHORT.get(slot) ?? slot).join(' + ')}</td>
+      <td>${group.slots.map((slot) => SLOT_LABEL.get(slot) ?? slot).join(' · ')}</td>
       <td><span class="pill ${STATUS_PILL[group.status]}">${STATUS_LABEL[group.status]}</span></td>
     </tr>
   `).join('');

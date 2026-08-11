@@ -1,13 +1,13 @@
 /**
  * calendar-view.js — ฟังก์ชันวาดปฏิทิน (บริสุทธิ์ ไม่ยุ่งกับเครือข่าย/สถานะ)
  */
-import { SLOTS, STATUS_LABEL, STATUS_PILL, PAIRED_SLOTS } from './config.js';
+import { STATUS_LABEL, STATUS_PILL, BOOKABLE_SLOTS, DUTY_SLOT } from './config.js';
 import { dateKey, daysInMonth, dayOfWeek, todayKey } from './thai.js';
 import { escapeHtml } from './ui.js';
 
-/** เวรตัวแทนของวันนั้น — ใช้เวรบ่ายก่อน ถ้าไม่มีค่อยไล่ช่วงอื่น */
+/** เวรของวันนั้น — เวรตรวจการมีช่วงเดียว (16.30 - 00.30 น.) */
 export function primaryShift(dayShifts = {}) {
-  for (const slot of [...PAIRED_SLOTS, 'day']) {
+  for (const slot of BOOKABLE_SLOTS) {
     if (dayShifts[slot]) return dayShifts[slot];
   }
   return null;
@@ -102,24 +102,20 @@ export function monthSummary({ year, month, shifts, currentNurseId }) {
   return `ทั้งเดือน ${total} วัน · ว่าง ${free} วัน · รออนุมัติ ${pending} · เวรของฉัน ${mine}`;
 }
 
-/** รายละเอียดช่วงเวลาทั้ง 3 ช่วง สำหรับกล่องยืนยัน */
+/** รายละเอียดเวรของวันนั้น สำหรับกล่องยืนยัน */
 export function renderSlotRows(dayShifts = {}) {
+  const shift = primaryShift(dayShifts);
   return `
     <div class="slot-list">
-      ${SLOTS.map((slot) => {
-        const shift = dayShifts[slot.key];
-        return `
-          <div class="slot-row">
-            <span class="slot-time mono">${slot.label}</span>
-            <span class="slot-who">${
-              shift
-                ? escapeHtml(shift.nurse?.full_name ?? '—')
-                : '<span class="muted">ยังไม่มีผู้ปฏิบัติงาน</span>'
-            }</span>
-            ${shift ? `<span class="pill ${STATUS_PILL[shift.status]}">${STATUS_LABEL[shift.status]}</span>` : ''}
-          </div>
-        `;
-      }).join('')}
+      <div class="slot-row">
+        <span class="slot-time mono">${DUTY_SLOT.label}</span>
+        <span class="slot-who">${
+          shift
+            ? escapeHtml(shift.nurse?.full_name ?? '—')
+            : '<span class="muted">ยังไม่มีผู้ปฏิบัติงาน</span>'
+        }</span>
+        ${shift ? `<span class="pill ${STATUS_PILL[shift.status]}">${STATUS_LABEL[shift.status]}</span>` : ''}
+      </div>
     </div>
   `;
 }

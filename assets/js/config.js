@@ -12,21 +12,28 @@ export const SUPABASE_ANON_KEY = window.__DUTY_CONFIG__?.supabaseAnonKey ?? '';
 /** โดเมนอีเมลแฝง — ผู้ใช้ไม่เห็น ใช้ผูกชื่อพยาบาลเข้ากับ Supabase Auth */
 export const AUTH_EMAIL_DOMAIN = window.__DUTY_CONFIG__?.authEmailDomain ?? 'duty.example.com';
 
-/** ช่วงเวลาเวรตรวจการ — ลำดับตรงกับคอลัมน์ในเอกสารราชการ */
+/**
+ * คอลัมน์เวลาในเอกสารราชการ — ฟอร์มมี 3 ช่องเสมอ ห้ามเปลี่ยน
+ * ใช้เฉพาะตอนสร้างเอกสารพิมพ์เท่านั้น ไม่ใช่รายการที่จองได้
+ */
 export const SLOTS = Object.freeze([
-  { key: 'day',     label: '08.30 น. - 16.30 น.', short: 'เวรเช้า',  labelThai: '๐๘.๓๐ น.-๑๖.๓๐ น.' },
-  { key: 'evening', label: '16.30 น. - 00.30 น.', short: 'เวรบ่าย',  labelThai: '๑๖.๓๐ น.- ๐๐.๓๐ น.' },
-  { key: 'night',   label: '00.30 น. - 08.30 น.', short: 'เวรดึก',   labelThai: '๐๐.๓๐ น.- ๐๘.๓๐ น.' },
+  { key: 'day',     label: '08.30 น. - 16.30 น.', short: 'เวรเช้า', labelThai: '๐๘.๓๐ น.-๑๖.๓๐ น.' },
+  { key: 'evening', label: '16.30 น. - 00.30 น.', short: 'เวรตรวจการ', labelThai: '๑๖.๓๐ น.- ๐๐.๓๐ น.' },
+  { key: 'night',   label: '00.30 น. - 08.30 น.', short: 'เวรดึก',  labelThai: '๐๐.๓๐ น.- ๐๘.๓๐ น.' },
 ]);
 
-export const SLOT_KEYS = SLOTS.map((slot) => slot.key);
-
 /**
- * เวรบ่าย+ดึก จองคู่กันเสมอ (ตามการปฏิบัติจริง — คนเดียวอยู่ยาว 16 ชม.)
- * เวรเช้าเปิดจองแยก เฉพาะวันหยุดราชการ
+ * เวรตรวจการมีช่วงเดียว คือ 16.30 น. - 00.30 น.
+ * อีก 2 คอลัมน์ในเอกสารเว้นว่างไว้ตามแบบฟอร์มเดิม
  */
-export const PAIRED_SLOTS = Object.freeze(['evening', 'night']);
-export const DAY_SLOT_HOLIDAY_ONLY = true;
+export const BOOKABLE_SLOTS = Object.freeze(['evening']);
+
+export const SLOT_BY_KEY = Object.freeze(
+  Object.fromEntries(SLOTS.map((slot) => [slot.key, slot])),
+);
+
+/** ช่วงเวลาเดียวที่ใช้จริง — ใช้แสดงบนหน้าจอ */
+export const DUTY_SLOT = SLOT_BY_KEY.evening;
 
 export const STATUS = Object.freeze({
   PENDING: 'pending',
