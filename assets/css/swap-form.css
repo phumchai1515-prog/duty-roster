@@ -1,9 +1,11 @@
 /* ============================================================
-   ใบแลกเวร F–NU–005 — A4 แนวนอนครึ่งหน้า (ตามฟอร์มกระดาษเดิม)
+   ใบแลกเวร F–NU–005 — A4 **แนวนอน** ตามฟอร์มกระดาษเดิม
+   ต้นฉบับเป็นกระดาษกว้าง บรรทัดยาวเกินกว่าที่ A4 แนวตั้งจะรับได้
+   ถ้าใช้แนวตั้งข้อความจะตกบรรทัดผิดจากต้นฉบับ
    ============================================================ */
 
 .swap-paper {
-  width: 210mm;
+  width: 297mm;
   margin: 0 auto;
   padding: 14mm 16mm 10mm;
   background: #fff;
@@ -88,7 +90,7 @@
 .swap-preview-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 /* ---------- ตอนสั่งพิมพ์ ---------- */
-@page { size: A4 portrait; margin: 12mm 14mm; }
+@page { size: A4 landscape; margin: 12mm 14mm; }
 
 @media print {
   html, body { background: #fff !important; }
