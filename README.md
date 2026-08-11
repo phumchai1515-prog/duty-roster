@@ -103,6 +103,7 @@ supabase/
   08_quota_february.sql โควตากุมภาพันธ์เป็น 2 เท่าเดือนอื่น
   09_auto_fill.sql    เติมเวรอัตโนมัติ + pg_cron + สถานะการจอง
   10_lock_functions.sql ปิดสิทธิ์ anon เรียก RPC (Supabase เปิดให้เป็นค่าเริ่มต้น)
+  11_keep_alive.sql   กันโปรเจกต์ถูกพักจน pg_cron หยุดทำงาน
 
 scripts/
   generate-seed.py     แปลง .xlsx เดิม → SQL
