@@ -54,28 +54,32 @@ python3 scripts/generate-seed.py "ตารางเวรตรวจการ 
 
 ## ขั้นที่ 4 — สร้างบัญชีให้พยาบาลทุกคน
 
-จากเครื่องของคุณ (ต้องมี Node.js 18 ขึ้นไป):
+เลือกวิธีใดวิธีหนึ่ง
+
+### วิธี ก — ผ่าน SQL Editor (ไม่ต้องใช้ secret key, ง่ายที่สุด)
+
+รัน `supabase/05_create_logins.sql` ใน SQL Editor
+
+เมื่อ Supabase เตือน *"Potential issue detected … auth.identities"* ให้กด
+**Run without RLS** — เป็นการเตือนผิดพลาด เพราะเราแค่เพิ่มข้อมูล ไม่ได้สร้างตาราง
+(ปุ่มอีกอันจะไปแก้ตารางระบบของ Supabase ห้ามกด)
+
+จะได้ผลลัพธ์บอกจำนวนบัญชีที่สร้าง / identity / ที่ผูกกับพยาบาล — ต้องเท่ากันทั้ง 3 ค่า
+
+### วิธี ข — ผ่าน Admin API (ทางการ ต้องใช้ secret key)
 
 ```bash
-npm install @supabase/supabase-js
-
-export SUPABASE_URL="https://xxxxx.supabase.co"
-export SUPABASE_SERVICE_ROLE_KEY="eyJ...."     # Project Settings → API → service_role
-export AUTH_EMAIL_DOMAIN="duty.example.com"    # ใช้ค่านี้ให้ตรงกับ env.js
-export DEFAULT_PIN="112233"                    # PIN ตั้งต้น อย่างน้อย 6 หลัก
-
-node scripts/provision-users.mjs               # ดูก่อนว่าจะทำอะไร
-node scripts/provision-users.mjs --apply       # ลงมือจริง
+bash scripts/setup-users.sh
 ```
 
-> ⚠️ `service_role key` มีสิทธิ์เต็มฐานข้อมูล — ใช้บนเครื่องตัวเองเท่านั้น
+สคริปต์จะถาม secret key แบบไม่แสดงบนหน้าจอ และไม่บันทึกลงไฟล์ใดๆ
+หาคีย์ได้ที่ **Project Settings → API Keys → Secret keys → Reveal**
+
+> ⚠️ secret key มีสิทธิ์เต็มฐานข้อมูล — ใช้บนเครื่องตัวเองเท่านั้น
 > ห้าม commit และห้ามใส่ในไฟล์ที่ deploy ขึ้นเว็บ
 
-**รีเซ็ต PIN ให้คนที่ลืม:**
-
-```bash
-node scripts/provision-users.mjs --apply --reset-pin benja
-```
+**รีเซ็ต PIN ให้คนที่ลืม** — ใช้ `supabase/06_reset_pin.sql` (แก้ slug ในไฟล์ก่อนรัน)
+หรือ `node scripts/provision-users.mjs --apply --reset-pin benja`
 
 ---
 
