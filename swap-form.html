@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ใบแลกเวร · เวรตรวจการ</title>
+<meta name="theme-color" content="#004d40">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/login.css">
+<link rel="stylesheet" href="assets/css/swap-form.css">
+<script src="assets/js/env.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">ข้ามไปยังเนื้อหาหลัก</a>
+<div id="shell"></div>
+
+<main id="main">
+  <div id="page-alert" class="alert error hidden no-print" role="alert"></div>
+
+  <section class="card no-print" aria-labelledby="form-title">
+    <div class="card-head">
+      <div>
+        <h1 id="form-title">ใบแลกเวร (F–NU–005)</h1>
+        <p class="caption">เลือกคำขอแลกเวรเพื่อกรอกอัตโนมัติ หรือกรอกเองแล้วสั่งพิมพ์</p>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="print-btn" type="button">พิมพ์ / บันทึกเป็น PDF</button>
+    </div>
+
+    <div class="field">
+      <label for="source-select">กรอกจากคำขอแลกเวร</label>
+      <select id="source-select">
+        <option value="">— กรอกเอง —</option>
+      </select>
+      <p class="field-hint">ระบบจะเติมชื่อและวันที่ให้อัตโนมัติ แก้ไขต่อได้</p>
+    </div>
+
+    <div class="swap-toolbar" style="margin-top:16px">
+      <div class="field">
+        <label for="written-on">วันที่เขียนใบ</label>
+        <input id="written-on" type="date">
+      </div>
+      <div class="field">
+        <label for="requester-name">ผู้ขอแลกเวร</label>
+        <input id="requester-name" type="text" maxlength="80" placeholder="นางสาว...">
+      </div>
+      <div class="field">
+        <label for="requester-role">ตำแหน่ง</label>
+        <input id="requester-role" type="text" maxlength="60" placeholder="พยาบาลวิชาชีพชำนาญการ">
+      </div>
+    </div>
+
+    <div class="swap-toolbar">
+      <div class="field">
+        <label for="absent-date">วันที่มาปฏิบัติงานไม่ได้</label>
+        <input id="absent-date" type="date">
+      </div>
+      <div class="field">
+        <label for="replacement-name">ผู้ที่จะขึ้นเวรแทน</label>
+        <input id="replacement-name" type="text" maxlength="80">
+      </div>
+    </div>
+
+    <div class="swap-toolbar">
+      <div class="field">
+        <label for="return-for">ผู้ขอจะไปขึ้นเวรแทน (ชื่อ)</label>
+        <input id="return-for" type="text" maxlength="80">
+      </div>
+      <div class="field">
+        <label for="return-date">วันที่จะขึ้นเวรแทน</label>
+        <input id="return-date" type="date">
+      </div>
+      <div class="field">
+        <label for="org-name">ชื่อหน่วยงาน</label>
+        <input id="org-name" type="text" maxlength="100" value="โรงพยาบาลจิตเวชเลยราชนครินทร์">
+      </div>
+    </div>
+  </section>
+
+  <div class="swap-preview-wrap">
+    <article class="swap-paper" id="document"></article>
+  </div>
+</main>
+
+<div id="toast-region" role="status" aria-live="polite"></div>
+<script type="module" src="assets/js/swap-form-page.js"></script>
+</body>
+</html>

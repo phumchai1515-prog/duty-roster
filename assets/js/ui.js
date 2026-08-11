@@ -4,11 +4,11 @@
 import { getSession, signOut } from './auth.js';
 
 const NAV_ITEMS = [
-  { href: 'index.html',   label: 'ปฏิทินเวร' },
-  { href: 'my.html',      label: 'เวรของฉัน' },
-  { href: 'approve.html', label: 'อนุมัติเวร', adminOnly: true },
-  { href: 'print.html',   label: 'พิมพ์เอกสาร' },
-  { href: 'admin.html',   label: 'ตั้งค่า', adminOnly: true },
+  { href: 'index.html',     label: 'ปฏิทินเวร' },
+  { href: 'my.html',        label: 'เวรของฉัน' },
+  { href: 'print.html',     label: 'พิมพ์ตารางเวร' },
+  { href: 'swap-form.html', label: 'ใบแลกเวร' },
+  { href: 'admin.html',     label: 'ผู้ดูแลระบบ', adminOnly: true },
 ];
 
 const THEME_KEY = 'duty-roster-theme';

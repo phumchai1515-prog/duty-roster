@@ -15,6 +15,36 @@
 }
 .legend-item { display: inline-flex; }
 
+/* ---------- สลับโหมด จองเวร / แจ้ง OFF ---------- */
+.mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-2);
+  padding: var(--s-2);
+  margin-bottom: var(--s-4);
+}
+.mode-btn {
+  min-height: 54px;
+  display: grid; gap: 2px;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-family: var(--font); font-size: 14px; font-weight: 800;
+  cursor: pointer;
+  text-align: center;
+}
+.mode-btn small { font-weight: 400; font-size: 11.5px; color: var(--muted); }
+.mode-btn:hover { background: var(--t-50); }
+.mode-btn[aria-pressed="true"] {
+  background: linear-gradient(135deg, var(--t-700), var(--t-500));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 6px 16px -8px var(--t-600);
+}
+.mode-btn[aria-pressed="true"] small { color: rgba(255, 255, 255, .85); }
+
 .calendar-card { padding: var(--s-3); }
 
 .dow-head, .calendar-grid {
@@ -70,6 +100,33 @@
 }
 .day.is-mine { border-color: var(--info); background: var(--info-bg); }
 .day.is-mine .day-owner { color: var(--info); font-weight: 700; }
+
+/* วันที่เราแจ้ง OFF ไว้ — ใช้ลายทางเฉียงกำกับ ไม่พึ่งสีอย่างเดียว */
+.day.is-off {
+  border-color: var(--muted);
+  border-style: dashed;
+  background:
+    repeating-linear-gradient(45deg,
+      var(--cream-2) 0 6px, var(--sand) 6px 12px);
+}
+.day.is-off .day-num { color: var(--muted); }
+
+/* จำนวนคนที่แจ้ง OFF ในวันนั้น */
+.day-off-count {
+  margin-left: auto;
+  font-size: 9.5px; font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--r-full);
+  background: var(--cream-2);
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+/* ในโหมดแจ้ง OFF ให้เน้นวันที่ยังไม่ได้แจ้ง */
+body[data-mode="off"] .day:not(.blank):not(.is-off):hover {
+  border-color: var(--muted);
+  background: var(--cream-2);
+}
 
 .day-foot { margin-top: auto; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .day-free { font-size: 11.5px; font-weight: 700; color: var(--t-600); }

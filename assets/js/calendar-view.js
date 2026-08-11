@@ -20,8 +20,15 @@ export function shiftIdsOwnedBy(dayShifts = {}, nurseId) {
     .map((shift) => shift.id);
 }
 
-function dayCell({ year, month, day, key, dayShifts, holidayName, isMine }) {
+/** วัน OFF ของพยาบาลคนนี้ในวันนั้น (ถ้ามี) */
+export function myOffDay(offList = [], nurseId) {
+  return offList.find((row) => row.nurse?.id === nurseId) ?? null;
+}
+
+function dayCell({ year, month, day, key, dayShifts, holidayName, offList, currentNurseId }) {
   const shift = primaryShift(dayShifts);
+  const isMine = shiftIdsOwnedBy(dayShifts, currentNurseId).length > 0;
+  const myOff = myOffDay(offList, currentNurseId);
   const classes = ['day'];
 
   // ใช้ dayOfWeek แทน new Date(key) เพราะ "YYYY-MM-DD" ถูกตีความเป็น UTC
@@ -30,35 +37,47 @@ function dayCell({ year, month, day, key, dayShifts, holidayName, isMine }) {
   if (holidayName) classes.push('holiday');
   if (key === todayKey()) classes.push('today');
   if (isMine) classes.push('is-mine');
+  if (myOff) classes.push('is-off');
 
-  const statusPill = shift
-    ? `<span class="pill ${STATUS_PILL[shift.status]}">${STATUS_LABEL[shift.status]}</span>`
-    : '<span class="day-free">+ ว่าง</span>';
+  let footer;
+  let ariaLabel;
+
+  if (myOff) {
+    footer = '<span class="pill neutral">OFF ของฉัน</span>';
+    ariaLabel = `วันที่ ${day} คุณแจ้ง OFF ไว้`;
+  } else if (shift) {
+    footer = `<span class="pill ${STATUS_PILL[shift.status]}">${STATUS_LABEL[shift.status]}</span>`;
+    ariaLabel = `วันที่ ${day} ${shift.nurse?.full_name ?? ''} ${STATUS_LABEL[shift.status]}`;
+  } else {
+    footer = '<span class="day-free">+ ว่าง</span>';
+    ariaLabel = `วันที่ ${day} ยังไม่มีผู้จองเวร กดเพื่อจอง`;
+  }
 
   const ownerLine = shift
     ? `<span class="day-owner">${escapeHtml(shift.nurse?.full_name ?? '—')}</span>`
     : '';
 
-  const ariaLabel = shift
-    ? `วันที่ ${day} ${shift.nurse?.full_name ?? ''} ${STATUS_LABEL[shift.status]}`
-    : `วันที่ ${day} ยังไม่มีผู้จองเวร กดเพื่อจอง`;
+  // จำนวนคนที่แจ้ง OFF วันนั้น ช่วยให้เห็นว่าวันไหนคนไม่ว่างเยอะ
+  const offBadge = offList.length
+    ? `<span class="day-off-count" title="มีผู้แจ้ง OFF ${offList.length} คน">OFF ${offList.length}</span>`
+    : '';
 
   return `
     <button type="button" class="${classes.join(' ')}" data-date="${key}"
             aria-label="${escapeHtml(ariaLabel)}">
-      <span class="day-num">${day}</span>
+      <span class="day-num">${day}${offBadge}</span>
       ${holidayName ? `<span class="day-holiday-name">${escapeHtml(holidayName)}</span>` : ''}
       ${ownerLine}
-      <span class="day-foot">${statusPill}</span>
+      <span class="day-foot">${footer}</span>
     </button>
   `;
 }
 
 /**
  * สร้าง HTML ของตารางทั้งเดือน
- * @param {{year:number, month:number, shifts:Map, holidays:Map, currentNurseId:string}} options
+ * @param {{year:number, month:number, shifts:Map, holidays:Map, offDays:Map, currentNurseId:string}} options
  */
-export function renderMonthGrid({ year, month, shifts, holidays, currentNurseId }) {
+export function renderMonthGrid({ year, month, shifts, holidays, offDays, currentNurseId }) {
   const total = daysInMonth(year, month);
   const leadingBlanks = dayOfWeek(year, month, 1);
 
@@ -68,43 +87,52 @@ export function renderMonthGrid({ year, month, shifts, holidays, currentNurseId 
   }
   for (let day = 1; day <= total; day += 1) {
     const key = dateKey(year, month, day);
-    const dayShifts = shifts.get(key) ?? {};
     cells.push(dayCell({
       year,
       month,
       day,
       key,
-      dayShifts,
+      dayShifts: shifts.get(key) ?? {},
       holidayName: holidays.get(key),
-      isMine: shiftIdsOwnedBy(dayShifts, currentNurseId).length > 0,
+      offList: offDays.get(key) ?? [],
+      currentNurseId,
     }));
   }
   return cells.join('');
 }
 
 /** สรุปสถิติของเดือนไว้แสดงใต้ชื่อเดือน */
-export function monthSummary({ year, month, shifts, currentNurseId }) {
+export function monthSummary({ year, month, shifts, offDays, currentNurseId, quota }) {
   const total = daysInMonth(year, month);
   let booked = 0;
-  let pending = 0;
   let mine = 0;
+  let myOff = 0;
 
   for (let day = 1; day <= total; day += 1) {
-    const dayShifts = shifts.get(dateKey(year, month, day)) ?? {};
-    const shift = primaryShift(dayShifts);
-    if (!shift) continue;
-    booked += 1;
-    if (shift.status === 'pending') pending += 1;
-    if (shift.nurse?.id === currentNurseId) mine += 1;
+    const key = dateKey(year, month, day);
+    const shift = primaryShift(shifts.get(key) ?? {});
+    if (shift) {
+      booked += 1;
+      if (shift.nurse?.id === currentNurseId) mine += 1;
+    }
+    if (myOffDay(offDays.get(key) ?? [], currentNurseId)) myOff += 1;
   }
 
-  const free = total - booked;
-  return `ทั้งเดือน ${total} วัน · ว่าง ${free} วัน · รออนุมัติ ${pending} · เวรของฉัน ${mine}`;
+  return {
+    total,
+    free: total - booked,
+    mine,
+    myOff,
+    text: `ทั้งเดือน ${total} วัน · ว่าง ${total - booked} วัน · `
+        + `เวรของฉัน ${mine}/${quota} · OFF ของฉัน ${myOff} วัน`,
+  };
 }
 
 /** รายละเอียดเวรของวันนั้น สำหรับกล่องยืนยัน */
-export function renderSlotRows(dayShifts = {}) {
+export function renderSlotRows(dayShifts = {}, offList = []) {
   const shift = primaryShift(dayShifts);
+  const offNames = offList.map((row) => row.nurse?.full_name).filter(Boolean);
+
   return `
     <div class="slot-list">
       <div class="slot-row">
@@ -116,6 +144,12 @@ export function renderSlotRows(dayShifts = {}) {
         }</span>
         ${shift ? `<span class="pill ${STATUS_PILL[shift.status]}">${STATUS_LABEL[shift.status]}</span>` : ''}
       </div>
+      ${offNames.length ? `
+        <div class="slot-row">
+          <span class="slot-time">แจ้ง OFF</span>
+          <span class="slot-who">${escapeHtml(offNames.join(', '))}</span>
+        </div>
+      ` : ''}
     </div>
   `;
 }

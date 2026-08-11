@@ -39,12 +39,25 @@
     </div>
 
     <div id="page-alert" class="alert error hidden" role="alert"></div>
+    <div id="month-notice" class="alert warn hidden" role="status"></div>
 
-    <div class="legend card" role="list" aria-label="ความหมายของสถานะ">
-      <span class="legend-item" role="listitem"><span class="pill ok">อนุมัติแล้ว</span></span>
-      <span class="legend-item" role="listitem"><span class="pill warn">รออนุมัติ</span></span>
+    <div class="mode-switch card" role="group" aria-label="เลือกสิ่งที่ต้องการทำ">
+      <button type="button" class="mode-btn" id="mode-shift" aria-pressed="true">
+        จองเวร
+        <small>เลือกวันที่ต้องการขึ้นเวร</small>
+      </button>
+      <button type="button" class="mode-btn" id="mode-off" aria-pressed="false">
+        แจ้ง OFF
+        <small>เลือกวันที่ขึ้นเวรไม่ได้</small>
+      </button>
+    </div>
+
+    <div class="legend card" role="list" aria-label="ความหมายของสัญลักษณ์">
+      <span class="legend-item" role="listitem"><span class="pill ok">จองแล้ว</span></span>
       <span class="legend-item" role="listitem"><span class="pill info">เวรของฉัน</span></span>
-      <span class="legend-item" role="listitem"><span class="pill neutral">ว่าง — กดเพื่อจอง</span></span>
+      <span class="legend-item" role="listitem"><span class="pill neutral">OFF ของฉัน</span></span>
+      <span class="legend-item" role="listitem"><span class="pill gold">วันหยุดราชการ</span></span>
+      <span class="legend-item" role="listitem"><span class="day-free">+ ว่าง — กดเพื่อจอง</span></span>
     </div>
 
     <section class="card calendar-card" aria-labelledby="month-label">

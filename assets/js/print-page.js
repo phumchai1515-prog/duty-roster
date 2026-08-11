@@ -15,7 +15,6 @@ const dom = {
   pendingWarning: document.getElementById('pending-warning'),
   monthSelect: document.getElementById('month-select'),
   yearSelect: document.getElementById('year-select'),
-  scopeSelect: document.getElementById('scope-select'),
   printBtn: document.getElementById('print-btn'),
   editBtn: document.getElementById('edit-header-btn'),
   backdrop: document.getElementById('header-backdrop'),
@@ -82,22 +81,18 @@ async function loadMeta(year, month) {
   return latest?.[0] ? { ...latest[0], order_no: null, year_be: yearBe, month } : {};
 }
 
-function countPending(shifts, year, month) {
-  let pending = 0;
+/** ตรวจว่าเดือนนี้ยังมีวันที่ไม่มีคนจองเหลืออยู่กี่วัน */
+function countEmptyDays(shifts, year, month) {
   let empty = 0;
   for (let day = 1; day <= daysInMonth(year, month); day += 1) {
-    const dayShifts = shifts.get(dateKey(year, month, day)) ?? {};
-    const evening = dayShifts.evening;
-    if (!evening) empty += 1;
-    else if (evening.status === 'pending') pending += 1;
+    if (!shifts.get(dateKey(year, month, day))?.evening) empty += 1;
   }
-  return { pending, empty };
+  return empty;
 }
 
 async function refresh() {
   const year = selectedYear();
   const month = selectedMonth();
-  const includePending = dom.scopeSelect.value === 'all';
 
   dom.alert.classList.add('hidden');
   dom.doc.innerHTML = '<p class="empty">กำลังโหลดเอกสาร…</p>';
@@ -110,16 +105,12 @@ async function refresh() {
     ]);
     currentMeta = meta;
 
-    dom.doc.innerHTML = renderDocument({ year, month, shifts, holidays, meta, includePending });
+    dom.doc.innerHTML = renderDocument({ year, month, shifts, holidays, meta });
 
-    const { pending, empty } = countPending(shifts, year, month);
-    const warnings = [];
-    if (empty) warnings.push(`ยังไม่มีผู้จอง ${empty} วัน`);
-    if (pending && !includePending) warnings.push(`มีเวรรออนุมัติ ${pending} วัน ซึ่งยังไม่แสดงในเอกสารนี้`);
-    else if (pending) warnings.push(`มีเวรรออนุมัติ ${pending} วัน แสดงรวมอยู่ในเอกสาร`);
-
-    if (warnings.length) {
-      dom.pendingWarning.textContent = `ตรวจสอบก่อนพิมพ์ — ${warnings.join(' · ')}`;
+    const empty = countEmptyDays(shifts, year, month);
+    if (empty) {
+      dom.pendingWarning.textContent =
+        `ตรวจสอบก่อนพิมพ์ — ยังไม่มีผู้จองเวร ${empty} วันในเดือนนี้`;
       dom.pendingWarning.classList.remove('hidden');
     } else {
       dom.pendingWarning.classList.add('hidden');
@@ -181,7 +172,6 @@ async function saveHeader() {
 
 dom.monthSelect.addEventListener('change', refresh);
 dom.yearSelect.addEventListener('change', refresh);
-dom.scopeSelect.addEventListener('change', refresh);
 dom.printBtn.addEventListener('click', () => window.print());
 dom.editBtn.addEventListener('click', openHeaderDialog);
 dom.headerCancel.addEventListener('click', () => dom.backdrop.classList.add('hidden'));

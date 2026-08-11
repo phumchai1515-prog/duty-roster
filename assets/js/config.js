@@ -35,16 +35,14 @@ export const SLOT_BY_KEY = Object.freeze(
 /** ช่วงเวลาเดียวที่ใช้จริง — ใช้แสดงบนหน้าจอ */
 export const DUTY_SLOT = SLOT_BY_KEY.evening;
 
-export const STATUS = Object.freeze({
-  PENDING: 'pending',
-  APPROVED: 'approved',
-  REJECTED: 'rejected',
-});
-
+/**
+ * สถานะเวร — ระบบจองเองมีผลทันที ไม่มีขั้นอนุมัติ
+ * ค่า pending คงไว้เพื่ออ่านข้อมูลเก่าที่บันทึกไว้ก่อนเปลี่ยนระบบ
+ */
 export const STATUS_LABEL = Object.freeze({
-  pending: 'รออนุมัติ',
-  approved: 'อนุมัติแล้ว',
-  rejected: 'ไม่อนุมัติ',
+  pending: 'รอยืนยัน',
+  approved: 'จองแล้ว',
+  rejected: 'ยกเลิก',
 });
 
 /** class ของ .pill ที่ใช้กับแต่ละสถานะ — ห้ามสื่อความหมายด้วยสีอย่างเดียว ต้องมีข้อความกำกับ */
@@ -56,10 +54,6 @@ export const STATUS_PILL = Object.freeze({
 
 /** กติกาการจอง */
 export const RULES = Object.freeze({
-  /** จองล่วงหน้าได้ไกลสุดกี่วัน */
-  maxDaysAhead: 180,
-  /** ยกเลิกเวรที่อนุมัติแล้วเองไม่ได้ ต้องขอหัวหน้า */
-  selfCancelApproved: false,
   /** เตือนเมื่อจองเวรติดกันเกินกี่คืน */
   consecutiveWarnAt: 3,
 });

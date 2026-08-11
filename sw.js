@@ -11,14 +11,14 @@
  * ข้อมูลเวรจาก Supabase ไม่ cache เด็ดขาด เพราะตารางเวรที่ค้างอยู่
  * อาจทำให้จองซ้ำหรือเข้าใจผิดว่าวันนั้นยังว่าง
  */
-const CACHE_VERSION = 'duty-roster-v2';
+const CACHE_VERSION = 'duty-roster-v3';
 
 const SHELL_FILES = [
   './',
   'index.html',
   'login.html',
   'my.html',
-  'approve.html',
+  'swap-form.html',
   'print.html',
   'admin.html',
   'offline.html',
@@ -29,6 +29,7 @@ const SHELL_FILES = [
   'assets/css/login.css',
   'assets/css/calendar.css',
   'assets/css/print.css',
+  'assets/css/swap-form.css',
   'assets/js/env.js',
   'assets/js/config.js',
   'assets/js/thai.js',
@@ -43,9 +44,12 @@ const SHELL_FILES = [
   'assets/js/print-document.js',
   'assets/js/print-page.js',
   'assets/js/my-page.js',
-  'assets/js/approve-page.js',
   'assets/js/admin-page.js',
   'assets/js/login.js',
+  'assets/js/off-days.js',
+  'assets/js/month-settings.js',
+  'assets/js/swap-document.js',
+  'assets/js/swap-form-page.js',
 ];
 
 self.addEventListener('install', (event) => {

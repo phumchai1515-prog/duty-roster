@@ -59,6 +59,28 @@
     </div>
   </section>
 
+  <section class="card" aria-labelledby="off-title">
+    <div class="card-head">
+      <div>
+        <h2 id="off-title">วัน OFF ที่แจ้งไว้</h2>
+        <p class="caption">วันที่คุณแจ้งว่าขึ้นเวรไม่ได้ — แจ้งเพิ่มได้ที่ปฏิทินเวร โหมด "แจ้ง OFF"</p>
+      </div>
+      <div class="spacer"></div>
+      <a class="btn btn-ghost btn-sm" href="index.html">ไปที่ปฏิทิน</a>
+    </div>
+    <div class="table-wrap">
+      <table class="data">
+        <caption class="sr-only">รายการวัน OFF ของฉัน</caption>
+        <thead>
+          <tr><th scope="col">วันที่</th><th scope="col">เหตุผล</th><th scope="col">จัดการ</th></tr>
+        </thead>
+        <tbody id="off-body">
+          <tr><td colspan="3" class="empty">กำลังโหลด…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section class="card" aria-labelledby="history-title">
     <div class="card-head">
       <h2 id="history-title">ประวัติเวรที่ผ่านมา</h2>
@@ -91,6 +113,13 @@
     <div class="field">
       <label for="swap-nurse">ขอให้ใครมาปฏิบัติงานแทน</label>
       <select id="swap-nurse"></select>
+    </div>
+    <div class="field">
+      <label for="swap-offer">เวรที่คุณจะไปขึ้นแทนเป็นการตอบแทน</label>
+      <select id="swap-offer">
+        <option value="">— ไม่แลกกลับ (ยกเวรให้เฉยๆ) —</option>
+      </select>
+      <p class="field-hint">เลือกเวรของอีกฝ่ายที่คุณจะไปขึ้นแทน — จะถูกกรอกลงใบแลกเวร F–NU–005 ให้อัตโนมัติ</p>
     </div>
     <div class="field">
       <label for="swap-reason">เหตุผล (ไม่บังคับ)</label>

@@ -27,7 +27,7 @@ function clearError() {
 /** ปลายทางหลังล็อกอิน — รับเฉพาะชื่อไฟล์ในโปรเจกต์ กัน open redirect */
 function nextPage() {
   const requested = new URLSearchParams(window.location.search).get('next') ?? '';
-  const allowed = ['index.html', 'my.html', 'approve.html', 'print.html', 'admin.html'];
+  const allowed = ['index.html', 'my.html', 'print.html', 'swap-form.html', 'admin.html'];
   return allowed.includes(requested) ? requested : 'index.html';
 }
 

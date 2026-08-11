@@ -28,7 +28,7 @@ function tableHead() {
   `;
 }
 
-function tableRows({ year, month, shifts, holidays, includePending }) {
+function tableRows({ year, month, shifts, holidays }) {
   const total = daysInMonth(year, month);
   const rows = [];
 
@@ -44,8 +44,7 @@ function tableRows({ year, month, shifts, holidays, includePending }) {
 
     const cells = SLOTS.map((slot) => {
       const shift = dayShifts[slot.key];
-      const visible = shift && (includePending || shift.status === 'approved');
-      return `<td class="col-name">${visible ? escapeHtml(shift.nurse?.full_name ?? '') : ''}</td>`;
+      return `<td class="col-name">${shift ? escapeHtml(shift.nurse?.full_name ?? '') : ''}</td>`;
     }).join('');
 
     // หมายเหตุ: ใช้ของเวรใดก็ได้ในวันนั้น ปกติกรอกที่เวรบ่าย
@@ -78,10 +77,10 @@ function signatureBlock(meta) {
 
 /**
  * สร้างเอกสารทั้งแผ่น
- * @param {{year:number, month:number, shifts:Map, holidays:Map, meta:object, includePending:boolean}} options
+ * @param {{year:number, month:number, shifts:Map, holidays:Map, meta:object}} options
  * @returns {string} HTML ที่พร้อมใส่ใน .sheet-a4
  */
-export function renderDocument({ year, month, shifts, holidays, meta = {}, includePending = false }) {
+export function renderDocument({ year, month, shifts, holidays, meta = {} }) {
   const org = meta.organization_name || DEFAULT_ORG;
   const orderLine = meta.order_no
     ? `<p class="doc-title">คำสั่งที่ ${escapeHtml(toThaiDigits(meta.order_no))}</p>`
@@ -97,7 +96,7 @@ export function renderDocument({ year, month, shifts, holidays, meta = {}, inclu
 
     <table class="duty-table">
       ${tableHead()}
-      ${tableRows({ year, month, shifts, holidays, includePending })}
+      ${tableRows({ year, month, shifts, holidays })}
     </table>
 
     ${signatureBlock(meta)}

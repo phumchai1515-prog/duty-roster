@@ -7,7 +7,7 @@ import { BOOKABLE_SLOTS } from './config.js';
 import { dateKey, daysInMonth } from './thai.js';
 
 const SHIFT_FIELDS = `
-  id, duty_date, slot, status, note, reviewed_at, review_note,
+  id, duty_date, slot, status, note,
   nurse:nurses!shifts_nurse_id_fkey ( id, full_name, is_admin )
 `;
 
@@ -64,48 +64,11 @@ export async function bookShift(dutyDateKey, { slots = BOOKABLE_SLOTS, note = nu
   return data ?? [];
 }
 
-/** ยกเลิกเวรที่ยังรออนุมัติ (ทำได้ทั้งชุดของวันนั้น) */
+/** ยกเลิกเวรของตัวเอง (RLS อนุญาตเฉพาะเวรตัวเองที่ยังไม่ถึงวัน) */
 export async function cancelShifts(shiftIds) {
   if (!shiftIds.length) return;
   const { error } = await getClient().from('shifts').delete().in('id', shiftIds);
   if (error) throw error;
-}
-
-/** หัวหน้าอนุมัติ / ไม่อนุมัติ */
-export async function reviewShifts(shiftIds, { approve, reviewerId, note = null }) {
-  if (!shiftIds.length) return;
-  const { error } = await getClient()
-    .from('shifts')
-    .update({
-      status: approve ? 'approved' : 'rejected',
-      reviewed_by: reviewerId,
-      reviewed_at: new Date().toISOString(),
-      review_note: note,
-    })
-    .in('id', shiftIds);
-  if (error) throw error;
-}
-
-/** อนุมัติทุกเวรที่รออยู่ในเดือนนั้นรวดเดียว คืนจำนวนที่อนุมัติ */
-export async function approveMonth(year, month) {
-  const { data, error } = await getClient().rpc('approve_month', {
-    p_year: year,
-    p_month: month,
-  });
-  if (error) throw error;
-  return data ?? 0;
-}
-
-/** เวรที่รออนุมัติทั้งหมด (หน้าหัวหน้า) */
-export async function loadPendingShifts() {
-  const { data, error } = await getClient()
-    .from('shifts')
-    .select(SHIFT_FIELDS)
-    .eq('status', 'pending')
-    .order('duty_date');
-
-  if (error) throw error;
-  return data ?? [];
 }
 
 /** เวรของพยาบาลคนหนึ่ง ตั้งแต่วันที่กำหนดเป็นต้นไป */
@@ -131,7 +94,7 @@ export async function loadWorkloadSummary(from, to) {
     .select('nurse:nurses!shifts_nurse_id_fkey ( id, full_name )')
     .gte('duty_date', from)
     .lte('duty_date', to)
-    .eq('slot', 'evening')          // นับเวรบ่ายเป็นตัวแทน 1 คืน กันนับซ้ำกับเวรดึก
+    .eq('slot', 'evening')          // เวรตรวจการมีช่วงเดียว นับช่องนี้เป็น 1 เวร
     .neq('status', 'rejected');
 
   if (error) throw error;

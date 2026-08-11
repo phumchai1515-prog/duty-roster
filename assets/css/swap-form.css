@@ -1,0 +1,105 @@
+/* ============================================================
+   ใบแลกเวร F–NU–005 — A4 แนวนอนครึ่งหน้า (ตามฟอร์มกระดาษเดิม)
+   ============================================================ */
+
+.swap-paper {
+  width: 210mm;
+  margin: 0 auto;
+  padding: 14mm 16mm 10mm;
+  background: #fff;
+  color: #000;
+  box-shadow: var(--sh-3);
+  font-family: var(--font);
+  font-size: 15.5px;
+  line-height: 2.1;          /* เว้นบรรทัดกว้างพอให้เขียนด้วยมือได้ */
+}
+
+/* เอกสารราชการต้องขาว-ดำเสมอ ไม่ตามโหมดมืด */
+[data-theme="dark"] .swap-paper { background: #fff; color: #000; }
+
+.swap-title {
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.6;
+}
+.swap-org {
+  text-align: center;
+  font-weight: 700;
+  margin: 0 0 6mm;
+  line-height: 1.6;
+}
+
+.swap-date-line { text-align: center; margin: 0 0 5mm; }
+.swap-to { margin: 0 0 2mm; }
+
+.swap-body p { margin: 0; }
+.swap-body .indent { text-indent: 1.5cm; }
+
+.swap-signs { margin-top: 5mm; }
+.swap-signs p { margin: 0; }
+
+.swap-approve {
+  display: flex;
+  gap: 6mm;
+  margin-top: 4mm;
+}
+.swap-approve-col { flex: 1; }
+.swap-approve-col p { margin: 0; }
+.swap-approve-col .paren { text-align: center; }
+
+.swap-code {
+  text-align: right;
+  margin: 6mm 0 0;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+/* ---------- ช่องเติมข้อความ ---------- */
+.fill {
+  display: inline-block;
+  border-bottom: 1px dotted #000;
+  padding: 0 2px;
+  line-height: 1.5;
+  vertical-align: baseline;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.fill-center { text-align: center; }
+
+/* คำที่พิมพ์มากับฟอร์มอยู่แล้ว เช่น "ตรวจการ" */
+.preset {
+  display: inline-block;
+  border-bottom: 1px dotted #000;
+  padding: 0 6px;
+  font-weight: 600;
+}
+
+/* ---------- แถบเครื่องมือ (ไม่พิมพ์) ---------- */
+.swap-toolbar {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+.swap-toolbar .field { margin: 0; flex: 1 1 200px; }
+
+.swap-preview-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ---------- ตอนสั่งพิมพ์ ---------- */
+@page { size: A4 portrait; margin: 12mm 14mm; }
+
+@media print {
+  html, body { background: #fff !important; }
+  .appbar, .nav, .swap-toolbar, .skip-link, #toast-region, .no-print { display: none !important; }
+  main { max-width: none; padding: 0; margin: 0; }
+
+  .swap-paper {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
+}

@@ -5,7 +5,8 @@ import { getClient } from './supabase.js';
 
 const SWAP_FIELDS = `
   id, status, reason, created_at,
-  shift:shifts ( id, duty_date, slot, status ),
+  shift:shifts!swap_requests_shift_id_fkey ( id, duty_date, slot, status ),
+  offer:shifts!swap_requests_offer_shift_id_fkey ( id, duty_date, slot, status ),
   from_nurse:nurses!swap_requests_from_nurse_id_fkey ( id, full_name ),
   to_nurse:nurses!swap_requests_to_nurse_id_fkey ( id, full_name )
 `;
@@ -35,13 +36,19 @@ export async function loadOutgoingSwaps(nurseId) {
   return new Map((data ?? []).map((request) => [request.shift.id, request]));
 }
 
-export async function createSwapRequest({ shiftId, fromNurseId, toNurseId, reason }) {
+/**
+ * ส่งคำขอแลกเวร
+ * @param {string} [options.offerShiftId] เวรของอีกฝ่ายที่เราจะไปขึ้นแทนเป็นการตอบแทน
+ *                                        ว่างได้ถ้าเป็นการยกเวรให้เฉยๆ
+ */
+export async function createSwapRequest({ shiftId, fromNurseId, toNurseId, reason, offerShiftId = null }) {
   const { data, error } = await getClient()
     .from('swap_requests')
     .insert({
       shift_id: shiftId,
       from_nurse_id: fromNurseId,
       to_nurse_id: toNurseId,
+      offer_shift_id: offerShiftId || null,
       reason: reason || null,
     })
     .select(SWAP_FIELDS)
@@ -49,6 +56,20 @@ export async function createSwapRequest({ shiftId, fromNurseId, toNurseId, reaso
 
   if (error) throw error;
   return data;
+}
+
+/** เวรในอนาคตของพยาบาลอีกคน ใช้เลือกว่าจะไปขึ้นแทนวันไหนเป็นการตอบแทน */
+export async function loadUpcomingShiftsOf(nurseId, fromDateKey) {
+  const { data, error } = await getClient()
+    .from('shifts')
+    .select('id, duty_date, slot')
+    .eq('nurse_id', nurseId)
+    .neq('status', 'rejected')
+    .gte('duty_date', fromDateKey)
+    .order('duty_date');
+
+  if (error) throw error;
+  return data ?? [];
 }
 
 /** ตอบรับ / ปฏิเสธ — ทำผ่าน RPC เพราะต้องย้ายเจ้าของเวรด้วย */

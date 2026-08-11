@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ตั้งค่า · เวรตรวจการ</title>
+<title>ผู้ดูแลระบบ · เวรตรวจการ</title>
 <meta name="theme-color" content="#004d40">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
@@ -22,17 +22,123 @@
 <main id="main">
   <div id="page-alert" class="alert error hidden" role="alert"></div>
 
+  <!-- ========== ตั้งค่ารายเดือน ========== -->
+  <section class="card" aria-labelledby="month-title">
+    <div class="card-head">
+      <div>
+        <h1 id="month-title">ตั้งค่ารายเดือน</h1>
+        <p class="caption">โควตาเวร · เปิด-ปิดการจองเวร · เปิดให้จองวัน OFF</p>
+      </div>
+    </div>
+
+    <div class="row" style="align-items:flex-end">
+      <div class="field" style="flex:1 1 150px">
+        <label for="ms-month">เดือน</label>
+        <select id="ms-month"></select>
+      </div>
+      <div class="field" style="flex:1 1 120px">
+        <label for="ms-year">ปี พ.ศ.</label>
+        <select id="ms-year"></select>
+      </div>
+      <div class="field" style="flex:1 1 140px">
+        <label for="ms-quota">โควตาเวร/คน</label>
+        <input id="ms-quota" type="number" min="0" max="31" step="1">
+      </div>
+    </div>
+
+    <div class="stack" style="margin-top:16px">
+      <label class="switch-row">
+        <input type="checkbox" id="ms-off-open">
+        <span>
+          <strong>เปิดให้จองวัน OFF</strong>
+          <span class="caption">พยาบาลแจ้งวันที่ขึ้นเวรไม่ได้ของเดือนนี้</span>
+        </span>
+      </label>
+      <label class="switch-row">
+        <input type="checkbox" id="ms-locked">
+        <span>
+          <strong>ปิดการจองเวรของเดือนนี้</strong>
+          <span class="caption">ใช้เมื่อจัดตารางเสร็จแล้ว ไม่ให้แก้อีก</span>
+        </span>
+      </label>
+      <div class="field">
+        <label for="ms-note">ข้อความแจ้งบนปฏิทิน (ไม่บังคับ)</label>
+        <input id="ms-note" type="text" maxlength="120" placeholder="เช่น กรุณาจองให้ครบภายในวันที่ 20">
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:16px">
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="ms-save" type="button">บันทึกการตั้งค่าเดือนนี้</button>
+    </div>
+  </section>
+
+  <!-- ========== เพิ่มพยาบาล ========== -->
+  <section class="card" aria-labelledby="add-title">
+    <div class="card-head">
+      <div>
+        <h2 id="add-title">เพิ่มผู้ขึ้นเวร</h2>
+        <p class="caption">ระบบจะสร้างบัญชีเข้าระบบให้อัตโนมัติ และบังคับเปลี่ยน PIN เมื่อเข้าครั้งแรก</p>
+      </div>
+    </div>
+
+    <div id="add-error" class="alert error hidden" role="alert"></div>
+
+    <form id="add-form">
+      <div class="row" style="align-items:flex-end">
+        <div class="field" style="flex:0 1 130px">
+          <label for="add-prefix">คำนำหน้า</label>
+          <select id="add-prefix">
+            <option value="นาง">นาง</option>
+            <option value="นางสาว">นางสาว</option>
+            <option value="นาย">นาย</option>
+          </select>
+        </div>
+        <div class="field" style="flex:1 1 160px">
+          <label for="add-first">ชื่อ</label>
+          <input id="add-first" type="text" maxlength="60" required>
+        </div>
+        <div class="field" style="flex:1 1 160px">
+          <label for="add-last">นามสกุล</label>
+          <input id="add-last" type="text" maxlength="60" required>
+        </div>
+      </div>
+
+      <div class="row" style="align-items:flex-end; margin-top:12px">
+        <div class="field" style="flex:1 1 180px">
+          <label for="add-slug">รหัสผู้ใช้ (อังกฤษ)</label>
+          <input id="add-slug" type="text" maxlength="30" pattern="[a-z][a-z0-9]{2,29}"
+                 autocomplete="off" placeholder="เช่น somchai" required>
+          <p class="field-hint">ตัวพิมพ์เล็ก/ตัวเลข 3–30 ตัว ใช้ตอนล็อกอิน (ผู้ใช้ไม่เห็น)</p>
+        </div>
+        <div class="field" style="flex:1 1 160px">
+          <label for="add-pin">PIN ตั้งต้น (6 หลัก)</label>
+          <input id="add-pin" type="text" inputmode="numeric" maxlength="6" pattern="\d{6}"
+                 autocomplete="off" value="112233" required>
+        </div>
+        <div class="field" style="flex:0 1 150px">
+          <label class="switch-row" style="margin-top:8px">
+            <input type="checkbox" id="add-admin">
+            <span><strong>เป็นผู้ดูแลระบบ</strong></span>
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit" id="add-submit">เพิ่มรายชื่อ</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ========== รายชื่อ ========== -->
   <section class="card" aria-labelledby="nurses-title">
     <div class="card-head">
       <div>
-        <h1 id="nurses-title">รายชื่อพยาบาลตรวจการ</h1>
+        <h2 id="nurses-title">รายชื่อผู้ขึ้นเวร</h2>
         <p class="caption">ปิดใช้งานคนที่ย้ายออก แทนการลบ เพื่อรักษาประวัติเวรเดิมไว้</p>
       </div>
     </div>
 
     <div class="table-wrap">
       <table class="data">
-        <caption class="sr-only">รายชื่อพยาบาลตรวจการทั้งหมด</caption>
+        <caption class="sr-only">รายชื่อผู้ขึ้นเวรทั้งหมด</caption>
         <thead>
           <tr>
             <th scope="col">ชื่อ-นามสกุล</th>
@@ -48,11 +154,33 @@
     </div>
   </section>
 
+  <!-- ========== ภาระงาน ========== -->
+  <section class="card" aria-labelledby="workload-title">
+    <div class="card-head">
+      <div>
+        <h2 id="workload-title">จำนวนเวรต่อคน</h2>
+        <p class="caption">นับตั้งแต่ 1 ปีย้อนหลังถึง 1 ปีข้างหน้า ใช้ดูความเป็นธรรมของการกระจายเวร</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="data">
+        <caption class="sr-only">สรุปจำนวนเวรของแต่ละคน</caption>
+        <thead>
+          <tr><th scope="col">ชื่อ-นามสกุล</th><th scope="col">จำนวนเวร</th></tr>
+        </thead>
+        <tbody id="workload-body">
+          <tr><td colspan="2" class="empty">กำลังโหลด…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========== วันหยุด ========== -->
   <section class="card" aria-labelledby="holidays-title">
     <div class="card-head">
       <div>
         <h2 id="holidays-title">วันหยุดราชการ</h2>
-        <p class="caption">วันที่กำหนดไว้จะเปิดให้จองเวรเช้าเพิ่ม และแสดงแถบสีในปฏิทิน</p>
+        <p class="caption">แสดงแถบสีในปฏิทินและแถบเทาในเอกสารพิมพ์</p>
       </div>
     </div>
 
@@ -72,11 +200,7 @@
       <table class="data">
         <caption class="sr-only">รายการวันหยุดราชการ</caption>
         <thead>
-          <tr>
-            <th scope="col">วันที่</th>
-            <th scope="col">ชื่อวันหยุด</th>
-            <th scope="col">จัดการ</th>
-          </tr>
+          <tr><th scope="col">วันที่</th><th scope="col">ชื่อวันหยุด</th><th scope="col">จัดการ</th></tr>
         </thead>
         <tbody id="holidays-body">
           <tr><td colspan="3" class="empty">กำลังโหลด…</td></tr>
@@ -85,6 +209,7 @@
     </div>
   </section>
 
+  <!-- ========== ส่งออก ========== -->
   <section class="card" aria-labelledby="export-title">
     <div class="card-head">
       <div>
