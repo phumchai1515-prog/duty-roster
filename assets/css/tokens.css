@@ -1,73 +1,81 @@
 /* ============================================================
-   Design tokens — "Warm & Human"
+   Design tokens — "เอกสารราชการที่ออกแบบดี"
+   แนวคิด: หน้าจอเป็นเครือญาติกับเอกสารที่มันพิมพ์ออกมา
+           กระดาษครีม · เส้นบรรทัดคม · เขียวราชการ + ทองจากตราโรงพยาบาล
    ห้ามเขียนค่าสี / spacing / radius ตรงๆ ในไฟล์อื่น ให้อ้างตัวแปรจากที่นี่
    ============================================================ */
 :root {
-  /* Brand teal */
+  /* ---- Brand teal — สีสถาบัน ---- */
   --t-900:#00251a; --t-800:#00382e; --t-700:#004d40; --t-600:#00695c;
   --t-500:#00897b; --t-400:#26a69a; --t-300:#4db6ac; --t-100:#b2dfdb; --t-50:#e0f2f1;
 
-  /* Gold */
+  /* ---- Gold — มาจากเปลวไฟในตราโรงพยาบาล ใช้เน้นจุดสำคัญเท่านั้น ---- */
   --gold-700:#8d6a0a; --gold-600:#b89323; --gold-500:#d4af37;
   --gold-400:#e6c254; --gold-100:#fbf3da;
 
-  /* Warm neutrals */
-  --cream:#f6f2ea; --cream-2:#efe9dd; --sand:#e9e2d3; --paper:#fffdf9;
-  --ink:#15302a; --ink-2:#3a514c; --muted:#7c8c87; --muted-2:#9aa8a3;
-  --line:#e8e3d8; --line-2:#eef0e9; --surface:#ffffff;
+  /* ---- Warm neutrals — พื้นกระดาษ ---- */
+  --cream:#f4efe4; --cream-2:#ece5d6; --sand:#e2d9c6; --paper:#fffdf9;
+  --ink:#152e29; --ink-2:#3a514c; --muted:#788883; --muted-2:#98a6a1;
+  --line:#ded5c2;         /* เส้นบรรทัดบนกระดาษ — เข้มพอให้เห็นเป็นตาราง */
+  --line-2:#eee7d9;       /* เส้นแบ่งอ่อน */
+  --surface:#ffffff;
 
-  /* Sage */
   --sage:#5d8a6f; --sage-bg:#eef4ef;
 
-  /* Status */
-  --success:#1b5e20; --success-bg:#e8f5e9;
-  --warning:#b35300; --warning-bg:#fff3e0;
-  --danger:#b3261e;  --danger-bg:#fcefee;
-  --info:#0d47a1;    --info-bg:#e8f0fb;
+  /* ---- Status ---- */
+  --success:#1b5e20; --success-bg:#e6f2e7;
+  --warning:#b35300; --warning-bg:#fdf0e0;
+  --danger:#b3261e;  --danger-bg:#fbebe9;
+  --info:#0d47a1;    --info-bg:#e7eefa;
 
-  /* Radius */
-  --r-sm:8px; --r:12px; --r-md:16px; --r-lg:20px; --r-xl:26px; --r-full:999px;
+  /* ---- Radius — เอกสารมีมุมคม ใช้โค้งน้อย ---- */
+  --r-sm:6px; --r:10px; --r-md:14px; --r-lg:18px; --r-xl:24px; --r-full:999px;
 
-  /* Shadow */
-  --sh-1:0 1px 2px rgba(20,48,42,.05);
-  --sh-2:0 6px 18px -8px rgba(20,48,42,.14), 0 2px 6px -3px rgba(20,48,42,.08);
-  --sh-3:0 18px 40px -18px rgba(20,48,42,.22);
+  /* ---- Shadow — เงาบางเหมือนกระดาษวางซ้อน ไม่ใช่การ์ดลอย ---- */
+  --sh-1:0 1px 0 rgba(21,46,41,.04);
+  --sh-2:0 1px 2px rgba(21,46,41,.05), 0 8px 20px -14px rgba(21,46,41,.28);
+  --sh-3:0 2px 6px rgba(21,46,41,.07), 0 24px 50px -28px rgba(21,46,41,.35);
+  --sh-inset:inset 0 1px 0 rgba(255,255,255,.7);
 
-  /* Font */
+  /* ---- Font ---- */
   --font:'Sarabun', system-ui, -apple-system, sans-serif;
-  --mono:'JetBrains Mono', ui-monospace, monospace;
+  --mono:ui-monospace, 'SF Mono', Menlo, monospace;
 
-  /* Spacing scale */
-  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px;
+  /* ---- Spacing ---- */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px;
 
-  /* Layout */
-  --header-h:60px;
-  --content-max:1120px;
-  --tap:44px;          /* touch target ขั้นต่ำ */
+  /* ---- Layout ---- */
+  --content-max:1200px;
+  --tap:44px;
 
-  /* Focus */
-  --focus:0 0 0 3px var(--t-100), 0 0 0 5px var(--t-600);
+  --focus:0 0 0 3px var(--paper), 0 0 0 5px var(--t-600);
+
+  /* ---- Motion ---- */
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --dur:.18s;
 }
 
 /* ---------- Dark mode ---------- */
 [data-theme="dark"] {
-  --cream:#141a19; --cream-2:#1a2220; --sand:#222c29; --paper:#171f1d;
-  --surface:#1c2523;
-  --ink:#e8efec; --ink-2:#c2cfcb; --muted:#96a5a0; --muted-2:#7d8c87;
-  --line:#2c3835; --line-2:#26312e;
+  --cream:#12181a; --cream-2:#182022; --sand:#20292b; --paper:#151d1f;
+  --surface:#1a2325;
+  --ink:#e9f0ee; --ink-2:#c3d0cc; --muted:#93a29e; --muted-2:#7b8a86;
+  --line:#2e3a3c; --line-2:#26302f;
 
   --t-700:#4db6ac; --t-600:#26a69a; --t-500:#4db6ac;
-  --t-50:#1e2b28; --t-100:#26433d;
+  --t-50:#1b2a29; --t-100:#254340;
 
-  --sage:#8fbfa0; --sage-bg:#1d2b23;
-  --success:#a5d6a7; --success-bg:#1b2c1d;
-  --warning:#ffb74d; --warning-bg:#33240f;
-  --danger:#ef9a9a;  --danger-bg:#33201e;
-  --info:#90caf9;    --info-bg:#15263c;
-  --gold-700:#e6c254; --gold-100:#332b12;
+  --sage:#8fbfa0; --sage-bg:#1b2a23;
+  --success:#a5d6a7; --success-bg:#182a1b;
+  --warning:#ffb74d; --warning-bg:#30220e;
+  --danger:#ef9a9a;  --danger-bg:#31201e;
+  --info:#90caf9;    --info-bg:#14243a;
+  --gold-700:#e6c254; --gold-600:#d4af37; --gold-100:#2e2712;
 
-  --sh-1:0 1px 2px rgba(0,0,0,.4);
-  --sh-2:0 6px 18px -8px rgba(0,0,0,.6), 0 2px 6px -3px rgba(0,0,0,.4);
-  --sh-3:0 18px 40px -18px rgba(0,0,0,.7);
-  --focus:0 0 0 3px var(--t-100), 0 0 0 5px var(--t-400);
+  --sh-1:0 1px 0 rgba(0,0,0,.3);
+  --sh-2:0 1px 2px rgba(0,0,0,.5), 0 8px 20px -14px rgba(0,0,0,.8);
+  --sh-3:0 2px 6px rgba(0,0,0,.55), 0 24px 50px -28px rgba(0,0,0,.9);
+  --sh-inset:inset 0 1px 0 rgba(255,255,255,.05);
+
+  --focus:0 0 0 3px var(--cream), 0 0 0 5px var(--t-400);
 }

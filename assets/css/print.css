@@ -103,7 +103,7 @@ table.duty-table tr.is-holiday td { background: #dedede; }
   html, body { background: #fff !important; }
 
   /* ซ่อนทุกอย่างที่ไม่ใช่กระดาษ */
-  .appbar, .nav, .print-toolbar, .skip-link, #toast-region, .no-print { display: none !important; }
+  .masthead, .nav-bar, .print-toolbar, .skip-link, #toast-region, .no-print { display: none !important; }
 
   main { max-width: none; padding: 0; margin: 0; }
 

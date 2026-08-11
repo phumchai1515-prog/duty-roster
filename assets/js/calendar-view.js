@@ -2,8 +2,9 @@
  * calendar-view.js — ฟังก์ชันวาดปฏิทิน (บริสุทธิ์ ไม่ยุ่งกับเครือข่าย/สถานะ)
  */
 import { STATUS_LABEL, STATUS_PILL, BOOKABLE_SLOTS, DUTY_SLOT } from './config.js';
-import { dateKey, daysInMonth, dayOfWeek, todayKey } from './thai.js';
-import { escapeHtml } from './ui.js';
+import { dateKey, daysInMonth, dayOfWeek, todayKey, DOW_TH_SHORT } from './thai.js';
+import { escapeHtml, initialsOf } from './ui.js';
+import { icon } from './icons.js';
 
 /** เวรของวันนั้น — เวรตรวจการมีช่วงเดียว (16.30 - 00.30 น.) */
 export function primaryShift(dayShifts = {}) {
@@ -25,7 +26,14 @@ export function myOffDay(offList = [], nurseId) {
   return offList.find((row) => row.nurse?.id === nurseId) ?? null;
 }
 
-function dayCell({ year, month, day, key, dayShifts, holidayName, offList, currentNurseId }) {
+/** หัวตาราง วันในสัปดาห์ */
+export function renderDowHead() {
+  return DOW_TH_SHORT
+    .map((label, index) => `<span class="${[0, 6].includes(index) ? 'is-weekend' : ''}">${label}</span>`)
+    .join('');
+}
+
+function dayCell({ year, month, day, key, dayShifts, holidayName, offList, currentNurseId, index }) {
   const shift = primaryShift(dayShifts);
   const isMine = shiftIdsOwnedBy(dayShifts, currentNurseId).length > 0;
   const myOff = myOffDay(offList, currentNurseId);
@@ -36,26 +44,30 @@ function dayCell({ year, month, day, key, dayShifts, holidayName, offList, curre
   if ([0, 6].includes(dayOfWeek(year, month, day))) classes.push('weekend');
   if (holidayName) classes.push('holiday');
   if (key === todayKey()) classes.push('today');
+  if (shift) classes.push('taken');
   if (isMine) classes.push('is-mine');
   if (myOff) classes.push('is-off');
 
+  let body = '';
   let footer;
   let ariaLabel;
 
   if (myOff) {
-    footer = '<span class="pill neutral">OFF ของฉัน</span>';
+    footer = '<span class="pill neutral">OFF</span>';
     ariaLabel = `วันที่ ${day} คุณแจ้ง OFF ไว้`;
   } else if (shift) {
+    const name = shift.nurse?.full_name ?? '—';
+    body = `
+      <span class="day-person">
+        <span class="day-avatar" aria-hidden="true">${escapeHtml(initialsOf(name))}</span>
+        <span class="day-owner">${escapeHtml(name)}</span>
+      </span>`;
     footer = `<span class="pill ${STATUS_PILL[shift.status]}">${STATUS_LABEL[shift.status]}</span>`;
-    ariaLabel = `วันที่ ${day} ${shift.nurse?.full_name ?? ''} ${STATUS_LABEL[shift.status]}`;
+    ariaLabel = `วันที่ ${day} ${name} ${STATUS_LABEL[shift.status]}`;
   } else {
-    footer = '<span class="day-free">+ ว่าง</span>';
+    footer = `<span class="day-free">${icon('plus', { size: 12 })}ว่าง</span>`;
     ariaLabel = `วันที่ ${day} ยังไม่มีผู้จองเวร กดเพื่อจอง`;
   }
-
-  const ownerLine = shift
-    ? `<span class="day-owner">${escapeHtml(shift.nurse?.full_name ?? '—')}</span>`
-    : '';
 
   // จำนวนคนที่แจ้ง OFF วันนั้น ช่วยให้เห็นว่าวันไหนคนไม่ว่างเยอะ
   const offBadge = offList.length
@@ -64,10 +76,11 @@ function dayCell({ year, month, day, key, dayShifts, holidayName, offList, curre
 
   return `
     <button type="button" class="${classes.join(' ')}" data-date="${key}"
+            style="animation-delay:${Math.min(index * 8, 260)}ms"
             aria-label="${escapeHtml(ariaLabel)}">
       <span class="day-num">${day}${offBadge}</span>
       ${holidayName ? `<span class="day-holiday-name">${escapeHtml(holidayName)}</span>` : ''}
-      ${ownerLine}
+      ${body}
       <span class="day-foot">${footer}</span>
     </button>
   `;
@@ -96,12 +109,20 @@ export function renderMonthGrid({ year, month, shifts, holidays, offDays, curren
       holidayName: holidays.get(key),
       offList: offDays.get(key) ?? [],
       currentNurseId,
+      index: leadingBlanks + day,
     }));
   }
+
+  // เติมช่องท้ายให้ครบแถว ตารางจะได้เป็นสี่เหลี่ยมเต็ม
+  const trailing = (7 - ((leadingBlanks + total) % 7)) % 7;
+  for (let i = 0; i < trailing; i += 1) {
+    cells.push('<span class="day blank" aria-hidden="true"></span>');
+  }
+
   return cells.join('');
 }
 
-/** สรุปสถิติของเดือนไว้แสดงใต้ชื่อเดือน */
+/** สรุปสถิติของเดือน */
 export function monthSummary({ year, month, shifts, offDays, currentNurseId, quota }) {
   const total = daysInMonth(year, month);
   let booked = 0;
@@ -118,14 +139,26 @@ export function monthSummary({ year, month, shifts, offDays, currentNurseId, quo
     if (myOffDay(offDays.get(key) ?? [], currentNurseId)) myOff += 1;
   }
 
-  return {
-    total,
-    free: total - booked,
-    mine,
-    myOff,
-    text: `ทั้งเดือน ${total} วัน · ว่าง ${total - booked} วัน · `
-        + `เวรของฉัน ${mine}/${quota} · OFF ของฉัน ${myOff} วัน`,
-  };
+  return { total, booked, free: total - booked, mine, myOff, quota };
+}
+
+/** แถบตัวเลขสรุปข้างชื่อเดือน */
+export function renderStatStrip(summary) {
+  const overQuota = summary.mine > summary.quota;
+  return `
+    <div class="stat free">
+      <b>${summary.free}</b>
+      <span>วันว่าง</span>
+    </div>
+    <div class="stat ${overQuota ? 'over' : 'mine'}">
+      <b>${summary.mine}<span aria-hidden="true" style="font-size:15px;opacity:.5">/${summary.quota}</span></b>
+      <span>เวรของฉัน</span>
+    </div>
+    <div class="stat">
+      <b>${summary.myOff}</b>
+      <span>OFF ของฉัน</span>
+    </div>
+  `;
 }
 
 /** รายละเอียดเวรของวันนั้น สำหรับกล่องยืนยัน */
@@ -136,7 +169,7 @@ export function renderSlotRows(dayShifts = {}, offList = []) {
   return `
     <div class="slot-list">
       <div class="slot-row">
-        <span class="slot-time mono">${DUTY_SLOT.label}</span>
+        <span class="slot-time">${DUTY_SLOT.label}</span>
         <span class="slot-who">${
           shift
             ? escapeHtml(shift.nurse?.full_name ?? '—')
@@ -147,7 +180,7 @@ export function renderSlotRows(dayShifts = {}, offList = []) {
       ${offNames.length ? `
         <div class="slot-row">
           <span class="slot-time">แจ้ง OFF</span>
-          <span class="slot-who">${escapeHtml(offNames.join(', '))}</span>
+          <span class="slot-who caption">${escapeHtml(offNames.join(', '))}</span>
         </div>
       ` : ''}
     </div>

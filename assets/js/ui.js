@@ -2,14 +2,17 @@
  * ui.js — ชิ้นส่วน UI ที่ใช้ร่วมทุกหน้า: แถบหัว, เมนู, toast, โหมดมืด
  */
 import { getSession, signOut } from './auth.js';
+import { icon } from './icons.js';
 
 const NAV_ITEMS = [
-  { href: 'index.html',     label: 'ปฏิทินเวร' },
-  { href: 'my.html',        label: 'เวรของฉัน' },
-  { href: 'print.html',     label: 'พิมพ์ตารางเวร' },
-  { href: 'swap-form.html', label: 'ใบแลกเวร' },
-  { href: 'admin.html',     label: 'ผู้ดูแลระบบ', adminOnly: true },
+  { href: 'index.html',     label: 'ปฏิทินเวร',    icon: 'calendar' },
+  { href: 'my.html',        label: 'เวรของฉัน',    icon: 'user' },
+  { href: 'print.html',     label: 'พิมพ์ตารางเวร', icon: 'printer' },
+  { href: 'swap-form.html', label: 'ใบแลกเวร',     icon: 'swap' },
+  { href: 'admin.html',     label: 'ผู้ดูแลระบบ',  icon: 'settings', adminOnly: true },
 ];
+
+const ORGANIZATION = 'โรงพยาบาลจิตเวชเลยราชนครินทร์ · กรมสุขภาพจิต';
 
 const THEME_KEY = 'duty-roster-theme';
 
@@ -43,30 +46,48 @@ export function toggleTheme() {
  * วาดแถบหัว + เมนู ลงใน element ที่กำหนด
  * @param {{ mount: HTMLElement, current: string, session: object }} options
  */
+/** อักษรย่อของชื่อ ใช้ในวงกลมประจำตัว — ตัดคำนำหน้าออกก่อน */
+export function initialsOf(fullName = '') {
+  const withoutPrefix = String(fullName).replace(/^(นางสาว|นาง|นาย)/, '').trim();
+  return withoutPrefix.charAt(0) || '?';
+}
+
 export function renderShell({ mount, current, session }) {
   const isAdmin = Boolean(session?.nurse?.is_admin);
   const items = NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin);
+  const fullName = session?.nurse?.full_name ?? '';
 
   mount.innerHTML = `
-    <header class="appbar">
-      <div class="brand">
-        เวรตรวจการ
-        <small>ตารางปฏิบัติงานนอกเวลาราชการ</small>
+    <header class="masthead">
+      <div class="masthead-inner">
+        <img class="crest" src="assets/icons/logo.png" alt="ตราโรงพยาบาลจิตเวชเลยราชนครินทร์" width="40" height="40">
+        <div class="masthead-titles">
+          <div class="masthead-org">${ORGANIZATION}</div>
+          <div class="masthead-name">ระบบจองเวรตรวจการ</div>
+        </div>
+        <div class="spacer"></div>
+        <span class="user-chip ${isAdmin ? 'is-admin' : ''}"
+              title="${escapeHtml(fullName)}${isAdmin ? ' — ผู้ดูแลระบบ' : ''}">
+          <span class="avatar" aria-hidden="true">${escapeHtml(initialsOf(fullName))}</span>
+          <span class="user-name">${escapeHtml(fullName)}</span>
+        </span>
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="สลับโหมดสว่าง/มืด">
+          ${icon('contrast', { size: 18 })}
+        </button>
+        <button class="icon-btn" id="sign-out" type="button" aria-label="ออกจากระบบ" title="ออกจากระบบ">
+          ${icon('logout', { size: 18 })}
+        </button>
       </div>
-      <div class="spacer"></div>
-      <span class="pill ${isAdmin ? 'gold' : 'neutral'}" title="${isAdmin ? 'หัวหน้าเวร' : 'พยาบาลตรวจการ'}">
-        ${escapeHtml(session?.nurse?.full_name ?? '')}${isAdmin ? ' · หัวหน้า' : ''}
-      </span>
-      <button class="btn btn-icon btn-ghost" id="theme-toggle" type="button" aria-label="สลับโหมดสว่าง/มืด">
-        <span aria-hidden="true" id="theme-icon">◐</span>
-      </button>
-      <button class="btn btn-sm btn-ghost" id="sign-out" type="button">ออกจากระบบ</button>
     </header>
-    <nav class="nav" aria-label="เมนูหลัก">
-      ${items.map((item) => `
-        <a href="${item.href}"${item.href === current ? ' aria-current="page"' : ''}>${item.label}</a>
-      `).join('')}
-    </nav>
+    <div class="nav-bar">
+      <nav class="nav" aria-label="เมนูหลัก">
+        ${items.map((item) => `
+          <a href="${item.href}"${item.href === current ? ' aria-current="page"' : ''}>
+            ${icon(item.icon, { size: 16 })}<span>${item.label}</span>
+          </a>
+        `).join('')}
+      </nav>
+    </div>
   `;
 
   mount.querySelector('#theme-toggle').addEventListener('click', toggleTheme);

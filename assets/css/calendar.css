@@ -1,190 +1,300 @@
-/* ปฏิทินจองเวร + กล่องยืนยันแบบ bottom sheet */
+/* ============================================================
+   ปฏิทินจองเวร — จงใจให้หน้าตาเป็นเครือญาติกับเอกสารที่พิมพ์ออกมา
+   ตารางบัญชีมีเส้นจริง ไม่ใช่การ์ดลอยเป็นก้อนๆ
+   ============================================================ */
 
+/* ---------- แถบเดือน: ชื่อเดือนเป็นพระเอก สถิติอยู่ขวา ---------- */
 .month-bar {
-  display: flex; align-items: center; gap: var(--s-3);
-  padding: var(--s-3) var(--s-4);
+  display: flex; align-items: center; gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
   margin-bottom: var(--s-4);
+  flex-wrap: wrap;
 }
-.month-title { min-width: 0; }
-.month-title h1 { white-space: nowrap; }
 
-.legend {
-  display: flex; flex-wrap: wrap; gap: var(--s-3);
-  padding: var(--s-3) var(--s-4);
-  margin-bottom: var(--s-4);
+.month-nav { display: flex; gap: var(--s-2); flex: 0 0 auto; }
+
+.month-title { min-width: 0; flex: 1 1 220px; }
+.month-title h1 {
+  font-size: 32px; font-weight: 800; letter-spacing: -.02em;
+  line-height: 1.1; white-space: nowrap;
 }
-.legend-item { display: inline-flex; }
+.month-title .caption { margin-top: 3px; }
+
+/* แถบสถิติ — ตัวเลขใหญ่ ป้ายเล็ก */
+.stat-strip {
+  display: flex; gap: var(--s-5);
+  flex: 0 0 auto;
+  padding-left: var(--s-5);
+  border-left: 1px solid var(--line);
+}
+.stat { text-align: center; min-width: 62px; }
+.stat b {
+  display: block;
+  font-size: 26px; font-weight: 800; line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.03em;
+}
+.stat span {
+  display: block;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
+  color: var(--muted); margin-top: 2px;
+}
+.stat.free b { color: var(--t-600); }
+.stat.mine b { color: var(--info); }
+.stat.over b { color: var(--warning); }
 
 /* ---------- สลับโหมด จองเวร / แจ้ง OFF ---------- */
 .mode-switch {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: grid; grid-template-columns: 1fr 1fr;
   gap: var(--s-2);
   padding: var(--s-2);
   margin-bottom: var(--s-4);
 }
 .mode-btn {
-  min-height: 54px;
-  display: grid; gap: 2px;
+  min-height: 52px;
+  display: grid; gap: 1px;
   padding: var(--s-2) var(--s-3);
   border: 1px solid var(--line);
   border-radius: var(--r);
-  background: var(--surface);
+  background: var(--paper);
   color: var(--ink-2);
   font-family: var(--font); font-size: 14px; font-weight: 800;
-  cursor: pointer;
-  text-align: center;
+  cursor: pointer; text-align: center;
+  transition: all var(--dur) var(--ease);
 }
-.mode-btn small { font-weight: 400; font-size: 11.5px; color: var(--muted); }
-.mode-btn:hover { background: var(--t-50); }
+.mode-btn small { font-weight: 400; font-size: 11px; color: var(--muted); }
+.mode-btn:hover { border-color: var(--t-400); background: var(--t-50); }
 .mode-btn[aria-pressed="true"] {
-  background: linear-gradient(135deg, var(--t-700), var(--t-500));
-  border-color: transparent;
-  color: #fff;
-  box-shadow: 0 6px 16px -8px var(--t-600);
+  background: linear-gradient(180deg, var(--t-600), var(--t-700));
+  border-color: var(--t-800); color: #fff;
+  box-shadow: 0 1px 0 rgba(255,255,255,.15) inset, 0 6px 16px -10px var(--t-700);
 }
-.mode-btn[aria-pressed="true"] small { color: rgba(255, 255, 255, .85); }
+.mode-btn[aria-pressed="true"] small { color: rgba(255,255,255,.8); }
 
-.calendar-card { padding: var(--s-3); }
-
-.dow-head, .calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: var(--s-2);
+/* ---------- คำอธิบายสัญลักษณ์ ---------- */
+.legend {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4);
+  padding: var(--s-3) var(--s-5);
+  margin-bottom: var(--s-4);
+  font-size: 12px;
 }
+.legend-item { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-2); }
+.legend-swatch {
+  width: 16px; height: 16px; flex: 0 0 auto;
+  border: 1px solid var(--line); border-radius: 4px;
+  background: var(--paper);
+}
+.legend-swatch.mine  { border-color: var(--info); background: var(--info-bg); box-shadow: inset 3px 0 0 var(--info); }
+.legend-swatch.taken { background: var(--surface); box-shadow: inset 3px 0 0 var(--success); }
+.legend-swatch.off {
+  border-style: dashed; border-color: var(--muted-2);
+  background: repeating-linear-gradient(45deg, var(--cream-2) 0 4px, var(--sand) 4px 8px);
+}
+.legend-swatch.holiday { border-color: var(--gold-600); background: var(--gold-100); }
+.legend-swatch.today   { border-color: var(--t-600); box-shadow: 0 0 0 2px var(--t-50); }
+
+/* ============================================================
+   ตารางปฏิทิน — กรอบเดียว เส้นในเป็นเส้นบาง เหมือนตารางในเอกสาร
+   ============================================================ */
+.calendar-card { padding: 0; overflow: hidden; }
+
 .dow-head {
-  margin-bottom: var(--s-2);
-  font-size: 12px; font-weight: 700; color: var(--muted);
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
+  background: var(--cream-2);
+  border-bottom: 1px solid var(--line);
+}
+.dow-head span {
+  padding: var(--s-2) var(--s-1);
   text-align: center;
+  font-size: 11.5px; font-weight: 800; letter-spacing: .06em;
+  color: var(--ink-2);
+  border-right: 1px solid var(--line-2);
+}
+.dow-head span:last-child { border-right: none; }
+.dow-head span.is-weekend { color: var(--muted); }
+
+.calendar-grid {
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
+  background: var(--line-2);
+  gap: 1px;                    /* ช่องว่าง 1px + พื้นหลังสีเส้น = เส้นตารางจริง */
+  border-bottom: 1px solid var(--line);
 }
 
 /* ---------- ช่องวันหนึ่งช่อง ---------- */
 .day {
   position: relative;
-  min-height: 96px;
-  display: flex; flex-direction: column; gap: 4px;
-  padding: var(--s-2);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
+  min-height: 108px;
+  display: flex; flex-direction: column; gap: 3px;
+  padding: var(--s-2) var(--s-2) 7px;
+  border: none;
   background: var(--surface);
   text-align: left;
   font-family: var(--font);
   color: var(--ink);
   cursor: pointer;
+  transition: background var(--dur) var(--ease);
+  animation: cell-in .3s var(--ease) both;
 }
-.day:hover:not(:disabled) { border-color: var(--t-400); background: var(--t-50); }
-.day:disabled { cursor: not-allowed; opacity: .55; }
+@keyframes cell-in { from { opacity: 0; transform: translateY(6px); } }
 
-.day.blank { border: none; background: transparent; cursor: default; pointer-events: none; }
-.day.weekend { background: var(--cream-2); }
-.day.holiday { background: var(--gold-100); border-color: var(--gold-400); }
-.day.today   { border-color: var(--t-600); box-shadow: inset 0 0 0 1px var(--t-600); }
+.day::before {
+  content: ''; position: absolute; inset: 0 auto 0 0; width: 3px;
+  background: transparent;
+  transition: background var(--dur) var(--ease);
+}
+
+.day:hover:not(:disabled) { background: var(--t-50); }
+.day:focus-visible { z-index: 2; box-shadow: var(--focus); }
+.day:disabled { cursor: not-allowed; opacity: .5; }
+
+.day.blank { background: var(--cream-2); cursor: default; pointer-events: none; }
+.day.weekend { background: var(--paper); }
+.day.holiday { background: var(--gold-100); }
+.day.holiday::before { background: var(--gold-500); }
+
+/* วันนี้ — จุดทองและกรอบเขียว */
+.day.today { box-shadow: inset 0 0 0 2px var(--t-600); }
+.day.today .day-num::after {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold-500); flex: 0 0 auto;
+}
+
+/* วันที่มีคนจองแล้ว */
+.day.taken::before { background: var(--success); }
+/* เวรของเรา — เน้นชัดที่สุด เพราะเป็นสิ่งที่ผู้ใช้มองหา */
+.day.is-mine { background: var(--info-bg); }
+.day.is-mine::before { background: var(--info); }
+
+/* วันที่เราแจ้ง OFF — ลายทางเฉียง ไม่พึ่งสีอย่างเดียว */
+.day.is-off {
+  background: repeating-linear-gradient(45deg,
+    var(--cream-2) 0 7px, var(--sand) 7px 14px);
+}
+.day.is-off::before { background: var(--muted-2); }
 
 .day-num {
-  font-size: 15px; font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  display: flex; align-items: center; gap: 4px;
+  display: flex; align-items: center; gap: 5px;
+  font-size: 17px; font-weight: 800; line-height: 1;
+  font-variant-numeric: tabular-nums; letter-spacing: -.02em;
 }
+.day.weekend .day-num, .day.is-off .day-num { color: var(--muted); }
 .day.today .day-num { color: var(--t-700); }
 
+.day-off-count {
+  margin-left: auto;
+  font-size: 9.5px; font-weight: 800; letter-spacing: .04em;
+  padding: 1px 5px; border-radius: var(--r-full);
+  background: var(--cream-2); color: var(--muted); border: 1px solid var(--line);
+}
+
 .day-holiday-name {
-  font-size: 10.5px; font-weight: 700; color: var(--gold-700);
+  font-size: 10px; font-weight: 800; color: var(--gold-700);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 
+/* ชื่อผู้ขึ้นเวร + วงกลมอักษรย่อ */
+.day-person { display: flex; align-items: center; gap: 5px; min-width: 0; margin-top: 2px; }
+.day-avatar {
+  width: 20px; height: 20px; flex: 0 0 auto;
+  display: grid; place-items: center; border-radius: 50%;
+  background: var(--t-100); color: var(--t-800);
+  font-size: 10.5px; font-weight: 800;
+}
+.day.is-mine .day-avatar { background: var(--info); color: #fff; }
 .day-owner {
-  font-size: 11.5px; line-height: 1.35;
-  color: var(--ink-2);
+  font-size: 11.5px; line-height: 1.3; color: var(--ink-2);
   overflow: hidden;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
-.day.is-mine { border-color: var(--info); background: var(--info-bg); }
 .day.is-mine .day-owner { color: var(--info); font-weight: 700; }
 
-/* วันที่เราแจ้ง OFF ไว้ — ใช้ลายทางเฉียงกำกับ ไม่พึ่งสีอย่างเดียว */
-.day.is-off {
-  border-color: var(--muted);
-  border-style: dashed;
-  background:
-    repeating-linear-gradient(45deg,
-      var(--cream-2) 0 6px, var(--sand) 6px 12px);
-}
-.day.is-off .day-num { color: var(--muted); }
-
-/* จำนวนคนที่แจ้ง OFF ในวันนั้น */
-.day-off-count {
-  margin-left: auto;
-  font-size: 9.5px; font-weight: 700;
-  padding: 1px 5px;
-  border-radius: var(--r-full);
-  background: var(--cream-2);
-  color: var(--muted);
-  border: 1px solid var(--line);
-}
-
-/* ในโหมดแจ้ง OFF ให้เน้นวันที่ยังไม่ได้แจ้ง */
-body[data-mode="off"] .day:not(.blank):not(.is-off):hover {
-  border-color: var(--muted);
-  background: var(--cream-2);
-}
-
 .day-foot { margin-top: auto; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-.day-free { font-size: 11.5px; font-weight: 700; color: var(--t-600); }
+.day-free {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11.5px; font-weight: 800; color: var(--t-600);
+  opacity: .75;
+}
+.day:hover .day-free { opacity: 1; }
 
-/* ---------- Bottom sheet ---------- */
+/* ============================================================
+   Bottom sheet ยืนยันการทำรายการ
+   ============================================================ */
 .sheet-backdrop {
   position: fixed; inset: 0; z-index: 400;
   display: grid; align-items: end; justify-items: center;
-  background: rgba(20, 48, 42, .5);
-  padding: 0;
+  background: rgba(10, 30, 26, .55);
+  backdrop-filter: blur(2px);
+  animation: fade-in .18s var(--ease) both;
 }
+@keyframes fade-in { from { opacity: 0; } }
+
 .sheet {
-  width: min(480px, 100%);
+  width: min(500px, 100%);
   background: var(--surface);
+  border: 1px solid var(--line);
+  border-bottom: none;
   border-radius: var(--r-lg) var(--r-lg) 0 0;
   box-shadow: var(--sh-3);
   padding: var(--s-3) var(--s-5) calc(var(--s-5) + env(safe-area-inset-bottom));
-  max-height: 85dvh; overflow-y: auto;
+  max-height: 88dvh; overflow-y: auto;
+  animation: sheet-up .26s var(--ease) both;
 }
+@keyframes sheet-up { from { transform: translateY(24px); opacity: 0; } }
+
 .sheet-grip {
-  width: 40px; height: 4px; border-radius: var(--r-full);
+  width: 38px; height: 4px; border-radius: var(--r-full);
   background: var(--line); margin: 0 auto var(--s-4);
 }
 .sheet h2 { margin-bottom: 2px; }
-.sheet-actions {
-  display: flex; gap: var(--s-3); margin-top: var(--s-5);
-}
+.sheet-actions { display: flex; gap: var(--s-3); margin-top: var(--s-5); }
 .sheet-actions .btn { flex: 1; }
 
-.slot-list { display: grid; gap: var(--s-2); margin-top: var(--s-3); }
+.slot-list { display: grid; gap: var(--s-2); margin: var(--s-3) 0; }
 .slot-row {
   display: flex; align-items: center; gap: var(--s-3);
   padding: var(--s-3);
   border: 1px solid var(--line); border-radius: var(--r);
-  background: var(--cream-2);
+  background: var(--paper);
   font-size: 13.5px;
 }
-.slot-row .slot-time { font-weight: 700; font-family: var(--mono); font-size: 12.5px; white-space: nowrap; }
+.slot-row .slot-time {
+  font-weight: 800; font-size: 12.5px; white-space: nowrap;
+  font-variant-numeric: tabular-nums; color: var(--ink-2);
+}
 .slot-row .slot-who { flex: 1; min-width: 0; }
 
 @media (min-width: 721px) {
   .sheet-backdrop { align-items: center; }
-  .sheet { border-radius: var(--r-lg); }
+  .sheet { border-radius: var(--r-lg); border-bottom: 1px solid var(--line); }
+  @keyframes sheet-up { from { transform: translateY(12px) scale(.98); opacity: 0; } }
 }
 
-/* ---------- มือถือ: ปฏิทินยังเป็น 7 คอลัมน์ แต่ย่อรายละเอียด ---------- */
-@media (max-width: 720px) {
-  .dow-head, .calendar-grid { gap: 4px; }
-  .day { min-height: 72px; padding: 5px 4px; border-radius: var(--r-sm); }
-  .day-num { font-size: 13px; }
-  .day-owner { -webkit-line-clamp: 2; font-size: 10px; }
+/* ============================================================
+   มือถือ — ยัง 7 คอลัมน์ แต่ย่อรายละเอียด
+   ============================================================ */
+@media (max-width: 780px) {
+  .month-bar { padding: var(--s-3) var(--s-4); gap: var(--s-3); }
+  .month-title h1 { font-size: 24px; }
+  .stat-strip {
+    width: 100%; padding-left: 0; padding-top: var(--s-3);
+    border-left: none; border-top: 1px solid var(--line-2);
+    justify-content: space-around; gap: var(--s-2);
+  }
+  .stat b { font-size: 21px; }
+
+  .day { min-height: 76px; padding: 5px 4px; gap: 2px; }
+  .day-num { font-size: 14px; }
+  .day-avatar { display: none; }
+  .day-owner { font-size: 10px; -webkit-line-clamp: 2; }
   .day-holiday-name { display: none; }
   .day-free { font-size: 10px; }
-  .month-title h1 { font-size: 17px; }
-  .legend { font-size: 11px; gap: var(--s-2); }
+  .day-foot .pill { font-size: 9.5px; padding: 1px 6px; }
+  .legend { gap: var(--s-3); padding: var(--s-3) var(--s-4); font-size: 11px; }
 }
 
-@media (max-width: 380px) {
-  .day { min-height: 62px; }
+@media (max-width: 400px) {
+  .day { min-height: 66px; }
   .day-owner { -webkit-line-clamp: 1; }
+  .day-foot .pill { display: none; }
+  .day.taken .day-owner { -webkit-line-clamp: 2; }
 }

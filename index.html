@@ -6,7 +6,7 @@
 <title>ปฏิทินเวร · เวรตรวจการ</title>
 <meta name="theme-color" content="#004d40">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/icons/logo.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -27,21 +27,23 @@
   </div>
 
   <div id="page" class="hidden">
-    <div class="month-bar card">
-      <button class="btn btn-icon btn-ghost" id="prev-month" type="button" aria-label="เดือนก่อนหน้า">‹</button>
-      <div class="month-title">
-        <h1 id="month-label">—</h1>
-        <p class="caption" id="month-summary">—</p>
+    <div class="month-bar card rise rise-1">
+      <div class="month-nav">
+        <button class="btn btn-icon" id="prev-month" type="button" aria-label="เดือนก่อนหน้า"></button>
+        <button class="btn btn-icon" id="next-month" type="button" aria-label="เดือนถัดไป"></button>
       </div>
-      <button class="btn btn-icon btn-ghost" id="next-month" type="button" aria-label="เดือนถัดไป">›</button>
-      <div class="spacer"></div>
-      <button class="btn btn-sm btn-ghost" id="today-btn" type="button">เดือนนี้</button>
+      <div class="month-title">
+        <p class="eyebrow">ตารางปฏิบัติงานนอกเวลาราชการ</p>
+        <h1 id="month-label">—</h1>
+      </div>
+      <button class="btn btn-sm" id="today-btn" type="button">เดือนนี้</button>
+      <div class="stat-strip" id="stat-strip" aria-label="สรุปเดือนนี้"></div>
     </div>
 
     <div id="page-alert" class="alert error hidden" role="alert"></div>
     <div id="month-notice" class="alert warn hidden" role="status"></div>
 
-    <div class="mode-switch card" role="group" aria-label="เลือกสิ่งที่ต้องการทำ">
+    <div class="mode-switch card rise rise-2" role="group" aria-label="เลือกสิ่งที่ต้องการทำ">
       <button type="button" class="mode-btn" id="mode-shift" aria-pressed="true">
         จองเวร
         <small>เลือกวันที่ต้องการขึ้นเวร</small>
@@ -52,19 +54,17 @@
       </button>
     </div>
 
-    <div class="legend card" role="list" aria-label="ความหมายของสัญลักษณ์">
-      <span class="legend-item" role="listitem"><span class="pill ok">จองแล้ว</span></span>
-      <span class="legend-item" role="listitem"><span class="pill info">เวรของฉัน</span></span>
-      <span class="legend-item" role="listitem"><span class="pill neutral">OFF ของฉัน</span></span>
-      <span class="legend-item" role="listitem"><span class="pill gold">วันหยุดราชการ</span></span>
-      <span class="legend-item" role="listitem"><span class="day-free">+ ว่าง — กดเพื่อจอง</span></span>
+    <div class="legend card rise rise-2" role="list" aria-label="ความหมายของสัญลักษณ์">
+      <span class="legend-item" role="listitem"><span class="legend-swatch mine"></span>เวรของฉัน</span>
+      <span class="legend-item" role="listitem"><span class="legend-swatch taken"></span>มีผู้จองแล้ว</span>
+      <span class="legend-item" role="listitem"><span class="legend-swatch"></span>ว่าง — กดเพื่อจอง</span>
+      <span class="legend-item" role="listitem"><span class="legend-swatch off"></span>OFF ของฉัน</span>
+      <span class="legend-item" role="listitem"><span class="legend-swatch holiday"></span>วันหยุดราชการ</span>
+      <span class="legend-item" role="listitem"><span class="legend-swatch today"></span>วันนี้</span>
     </div>
 
-    <section class="card calendar-card" aria-labelledby="month-label">
-      <div class="dow-head" aria-hidden="true">
-        <span>อา.</span><span>จ.</span><span>อ.</span><span>พ.</span>
-        <span>พฤ.</span><span>ศ.</span><span>ส.</span>
-      </div>
+    <section class="card calendar-card rise rise-3" aria-labelledby="month-label">
+      <div class="dow-head" id="dow-head" aria-hidden="true"></div>
       <div id="calendar-grid" class="calendar-grid"></div>
     </section>
   </div>

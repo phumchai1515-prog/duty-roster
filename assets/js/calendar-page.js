@@ -9,7 +9,11 @@ import { requireSession, renderShell, renderSetupNotice, toast, applyStoredTheme
 import { loadMonthShifts, loadMonthHolidays, bookShift, cancelShifts, subscribeToShifts } from './shifts.js';
 import { loadMonthOffDays, bookOffDay, cancelOffDay } from './off-days.js';
 import { loadMonthSetting } from './month-settings.js';
-import { renderMonthGrid, monthSummary, renderSlotRows, primaryShift, shiftIdsOwnedBy, myOffDay } from './calendar-view.js';
+import {
+  renderMonthGrid, renderDowHead, renderStatStrip, monthSummary,
+  renderSlotRows, primaryShift, shiftIdsOwnedBy, myOffDay,
+} from './calendar-view.js';
+import { icon } from './icons.js';
 import { formatThaiMonthYear, formatThaiDateFull, todayKey, shiftMonth, parseDateKey, DOW_TH, dayOfWeek } from './thai.js';
 import { BOOKABLE_SLOTS, DUTY_SLOT, RULES } from './config.js';
 import { enforcePinChange } from './pin-gate.js';
@@ -24,7 +28,8 @@ const dom = {
   notice: document.getElementById('month-notice'),
   grid: document.getElementById('calendar-grid'),
   monthLabel: document.getElementById('month-label'),
-  monthSummary: document.getElementById('month-summary'),
+  statStrip: document.getElementById('stat-strip'),
+  dowHead: document.getElementById('dow-head'),
   prev: document.getElementById('prev-month'),
   next: document.getElementById('next-month'),
   today: document.getElementById('today-btn'),
@@ -78,9 +83,9 @@ function paint() {
   const currentNurseId = session.nurse.id;
 
   dom.monthLabel.textContent = formatThaiMonthYear(year, month);
-  dom.monthSummary.textContent = monthSummary({
+  dom.statStrip.innerHTML = renderStatStrip(monthSummary({
     year, month, shifts, offDays, currentNurseId, quota: setting.shift_quota,
-  }).text;
+  }));
   dom.grid.innerHTML = renderMonthGrid({ year, month, shifts, holidays, offDays, currentNurseId });
 
   // แจ้งสถานะของเดือนนั้น เช่น ปิดจองแล้ว หรือ ยังไม่เปิดให้จอง OFF
@@ -359,6 +364,10 @@ async function boot() {
 
   renderShell({ mount: dom.shell, current: 'index.html', session });
   await enforcePinChange(session);
+
+  dom.prev.innerHTML = icon('chevronLeft', { size: 18 });
+  dom.next.innerHTML = icon('chevronRight', { size: 18 });
+  dom.dowHead.innerHTML = renderDowHead();
 
   const { year, month } = parseDateKey(todayKey());
   await goToMonth(year, month);

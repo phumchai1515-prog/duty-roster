@@ -11,7 +11,7 @@
  * ข้อมูลเวรจาก Supabase ไม่ cache เด็ดขาด เพราะตารางเวรที่ค้างอยู่
  * อาจทำให้จองซ้ำหรือเข้าใจผิดว่าวันนั้นยังว่าง
  */
-const CACHE_VERSION = 'duty-roster-v3';
+const CACHE_VERSION = 'duty-roster-v4';
 
 const SHELL_FILES = [
   './',
@@ -24,6 +24,7 @@ const SHELL_FILES = [
   'offline.html',
   'manifest.json',
   'assets/icons/icon.svg',
+  'assets/icons/logo.png',
   'assets/css/tokens.css',
   'assets/css/base.css',
   'assets/css/login.css',
@@ -32,6 +33,7 @@ const SHELL_FILES = [
   'assets/css/swap-form.css',
   'assets/js/env.js',
   'assets/js/config.js',
+  'assets/js/icons.js',
   'assets/js/thai.js',
   'assets/js/supabase.js',
   'assets/js/auth.js',
