@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ปฏิทินเวร · เวรตรวจการ</title>
+<meta name="theme-color" content="#004d40">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/login.css">
+<link rel="stylesheet" href="assets/css/calendar.css">
+<script src="assets/js/env.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">ข้ามไปยังเนื้อหาหลัก</a>
+<div id="shell"></div>
+
+<main id="main">
+  <div id="boot" class="empty">
+    <div class="spinner" style="margin:0 auto"></div>
+    <p class="caption" style="margin-top:12px">กำลังโหลดตารางเวร…</p>
+  </div>
+
+  <div id="page" class="hidden">
+    <div class="month-bar card">
+      <button class="btn btn-icon btn-ghost" id="prev-month" type="button" aria-label="เดือนก่อนหน้า">‹</button>
+      <div class="month-title">
+        <h1 id="month-label">—</h1>
+        <p class="caption" id="month-summary">—</p>
+      </div>
+      <button class="btn btn-icon btn-ghost" id="next-month" type="button" aria-label="เดือนถัดไป">›</button>
+      <div class="spacer"></div>
+      <button class="btn btn-sm btn-ghost" id="today-btn" type="button">เดือนนี้</button>
+    </div>
+
+    <div id="page-alert" class="alert error hidden" role="alert"></div>
+
+    <div class="legend card" role="list" aria-label="ความหมายของสถานะ">
+      <span class="legend-item" role="listitem"><span class="pill ok">อนุมัติแล้ว</span></span>
+      <span class="legend-item" role="listitem"><span class="pill warn">รออนุมัติ</span></span>
+      <span class="legend-item" role="listitem"><span class="pill info">เวรของฉัน</span></span>
+      <span class="legend-item" role="listitem"><span class="pill neutral">ว่าง — กดเพื่อจอง</span></span>
+    </div>
+
+    <section class="card calendar-card" aria-labelledby="month-label">
+      <div class="dow-head" aria-hidden="true">
+        <span>อา.</span><span>จ.</span><span>อ.</span><span>พ.</span>
+        <span>พฤ.</span><span>ศ.</span><span>ส.</span>
+      </div>
+      <div id="calendar-grid" class="calendar-grid"></div>
+    </section>
+  </div>
+</main>
+
+<!-- กล่องยืนยันการจอง -->
+<div id="sheet-backdrop" class="sheet-backdrop hidden">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet-grip" aria-hidden="true"></div>
+    <h2 id="sheet-title">—</h2>
+    <p class="caption" id="sheet-sub">—</p>
+    <div id="sheet-body" class="stack"></div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" id="sheet-close" type="button">ปิด</button>
+      <button class="btn btn-primary" id="sheet-confirm" type="button">ยืนยันจองเวร</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-region" role="status" aria-live="polite"></div>
+
+<script type="module" src="assets/js/calendar-page.js"></script>
+</body>
+</html>

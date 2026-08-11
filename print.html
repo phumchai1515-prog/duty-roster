@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>พิมพ์เอกสาร · เวรตรวจการ</title>
+<meta name="theme-color" content="#004d40">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/login.css">
+<link rel="stylesheet" href="assets/css/print.css">
+<script src="assets/js/env.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">ข้ามไปยังเนื้อหาหลัก</a>
+<div id="shell"></div>
+
+<main id="main">
+  <div class="card print-toolbar no-print">
+    <div class="field">
+      <label for="month-select">เดือน</label>
+      <select id="month-select"></select>
+    </div>
+    <div class="field">
+      <label for="year-select">ปี พ.ศ.</label>
+      <select id="year-select"></select>
+    </div>
+    <div class="field">
+      <label for="scope-select">แสดงเวร</label>
+      <select id="scope-select">
+        <option value="approved">เฉพาะที่อนุมัติแล้ว</option>
+        <option value="all">ทั้งหมด (รวมที่รออนุมัติ)</option>
+      </select>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn btn-ghost" id="edit-header-btn" type="button">แก้หัวเอกสาร</button>
+    <button class="btn btn-primary" id="print-btn" type="button">พิมพ์เอกสาร</button>
+  </div>
+
+  <div id="page-alert" class="alert error hidden no-print" role="alert"></div>
+  <div id="pending-warning" class="alert warn hidden no-print" role="status"></div>
+
+  <div class="print-preview-wrap">
+    <article class="sheet-a4" id="document">
+      <p class="empty">กำลังโหลดเอกสาร…</p>
+    </article>
+  </div>
+</main>
+
+<!-- แก้หัวเอกสาร (เฉพาะหัวหน้า) -->
+<div id="header-backdrop" class="pin-gate-backdrop hidden no-print">
+  <div class="pin-gate" role="dialog" aria-modal="true" aria-labelledby="header-title">
+    <h2 id="header-title">หัวเอกสารราชการ</h2>
+    <p class="caption">ค่าที่ตั้งไว้จะใช้กับเดือนที่เลือกอยู่</p>
+    <div id="header-error" class="alert error hidden" role="alert"></div>
+
+    <div class="field">
+      <label for="org-input">ชื่อหน่วยงาน</label>
+      <input id="org-input" type="text" placeholder="โรงพยาบาลจิตเวชเลยราชนครินทร์">
+    </div>
+    <div class="field">
+      <label for="order-input">เลขที่คำสั่ง (ไม่บังคับ)</label>
+      <input id="order-input" type="text" placeholder="เช่น ๑๒๓/๒๕๖๘">
+    </div>
+    <div class="field">
+      <label for="signer-input">ชื่อผู้ลงนาม</label>
+      <input id="signer-input" type="text" placeholder="เช่น นายแพทย์...">
+    </div>
+    <div class="field">
+      <label for="position-input">ตำแหน่งผู้ลงนาม</label>
+      <input id="position-input" type="text" placeholder="เช่น ผู้อำนวยการโรงพยาบาลจิตเวชเลยราชนครินทร์">
+    </div>
+
+    <div class="row" style="margin-top:16px">
+      <button class="btn btn-ghost" id="header-cancel" type="button" style="flex:1">ยกเลิก</button>
+      <button class="btn btn-primary" id="header-save" type="button" style="flex:1">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-region" role="status" aria-live="polite"></div>
+
+<script type="module" src="assets/js/print-page.js"></script>
+</body>
+</html>

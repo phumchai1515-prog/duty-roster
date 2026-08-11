@@ -1,0 +1,69 @@
+/* หน้าเข้าสู่ระบบ + กล่องเปลี่ยน PIN ครั้งแรก */
+
+.login-body {
+  min-height: 100dvh;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, var(--t-50), transparent 70%),
+    var(--cream);
+}
+
+.login-shell {
+  min-height: 100dvh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--s-4);
+  padding: var(--s-5) var(--s-4);
+  max-width: none;
+}
+
+.login-card {
+  width: min(420px, 100%);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-3);
+  padding: var(--s-6) var(--s-5);
+}
+
+.login-head { text-align: center; margin-bottom: var(--s-5); }
+
+.login-mark {
+  width: 62px; height: 62px;
+  margin: 0 auto var(--s-3);
+  display: grid; place-items: center;
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--t-700), var(--t-500));
+  color: #fff;
+  font-size: 20px; font-weight: 800;
+  box-shadow: 0 10px 24px -12px var(--t-600);
+}
+
+.login-head h1 { font-size: 21px; margin-bottom: var(--s-1); }
+
+.login-card form { margin-top: var(--s-4); }
+.login-card .btn-block { margin-top: var(--s-5); }
+
+.pin-input {
+  letter-spacing: 10px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  padding-left: 10px;   /* ชดเชย letter-spacing ให้ดูอยู่กึ่งกลาง */
+}
+
+.login-foot { text-align: center; }
+
+/* กล่องบังคับเปลี่ยน PIN ครั้งแรก — ใช้ในหน้าอื่นด้วย */
+.pin-gate-backdrop {
+  position: fixed; inset: 0; z-index: 400;
+  display: grid; place-items: center;
+  padding: var(--s-4);
+  background: rgba(20, 48, 42, .55);
+  backdrop-filter: blur(3px);
+}
+.pin-gate {
+  width: min(400px, 100%);
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-3);
+  padding: var(--s-5);
+}

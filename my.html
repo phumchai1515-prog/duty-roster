@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เวรของฉัน · เวรตรวจการ</title>
+<meta name="theme-color" content="#004d40">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/login.css">
+<script src="assets/js/env.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">ข้ามไปยังเนื้อหาหลัก</a>
+<div id="shell"></div>
+
+<main id="main">
+  <div id="page-alert" class="alert error hidden" role="alert"></div>
+
+  <section class="card" aria-labelledby="incoming-title">
+    <div class="card-head">
+      <h2 id="incoming-title">คำขอแลกเวรที่ส่งถึงฉัน</h2>
+    </div>
+    <div id="incoming-list" class="stack">
+      <p class="empty">กำลังโหลด…</p>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="upcoming-title">
+    <div class="card-head">
+      <div>
+        <h1 id="upcoming-title">เวรที่จะถึง</h1>
+        <p class="caption" id="upcoming-summary">—</p>
+      </div>
+      <div class="spacer"></div>
+      <a class="btn btn-primary btn-sm" href="index.html">จองเวรเพิ่ม</a>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data">
+        <caption class="sr-only">รายการเวรที่จะถึงของฉัน</caption>
+        <thead>
+          <tr>
+            <th scope="col">วันที่</th>
+            <th scope="col">ช่วงเวลา</th>
+            <th scope="col">สถานะ</th>
+            <th scope="col">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="upcoming-body">
+          <tr><td colspan="4" class="empty">กำลังโหลด…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="history-title">
+    <div class="card-head">
+      <h2 id="history-title">ประวัติเวรที่ผ่านมา</h2>
+    </div>
+    <div class="table-wrap">
+      <table class="data">
+        <caption class="sr-only">ประวัติเวรที่ปฏิบัติไปแล้ว</caption>
+        <thead>
+          <tr>
+            <th scope="col">วันที่</th>
+            <th scope="col">ช่วงเวลา</th>
+            <th scope="col">สถานะ</th>
+          </tr>
+        </thead>
+        <tbody id="history-body">
+          <tr><td colspan="3" class="empty">กำลังโหลด…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- ขอแลกเวร -->
+<div id="swap-backdrop" class="pin-gate-backdrop hidden">
+  <div class="pin-gate" role="dialog" aria-modal="true" aria-labelledby="swap-title">
+    <h2 id="swap-title">ขอแลกเวร</h2>
+    <p class="caption" id="swap-sub">—</p>
+    <div id="swap-error" class="alert error hidden" role="alert"></div>
+
+    <div class="field">
+      <label for="swap-nurse">ขอให้ใครมาปฏิบัติงานแทน</label>
+      <select id="swap-nurse"></select>
+    </div>
+    <div class="field">
+      <label for="swap-reason">เหตุผล (ไม่บังคับ)</label>
+      <textarea id="swap-reason" maxlength="300" placeholder="เช่น ติดราชการ / ลาพักผ่อน"></textarea>
+    </div>
+
+    <div class="row" style="margin-top:16px">
+      <button class="btn btn-ghost" id="swap-cancel" type="button" style="flex:1">ยกเลิก</button>
+      <button class="btn btn-primary" id="swap-send" type="button" style="flex:1">ส่งคำขอ</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-region" role="status" aria-live="polite"></div>
+<script type="module" src="assets/js/my-page.js"></script>
+</body>
+</html>

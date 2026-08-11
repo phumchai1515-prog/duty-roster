@@ -1,0 +1,73 @@
+/* ============================================================
+   Design tokens — "Warm & Human"
+   ห้ามเขียนค่าสี / spacing / radius ตรงๆ ในไฟล์อื่น ให้อ้างตัวแปรจากที่นี่
+   ============================================================ */
+:root {
+  /* Brand teal */
+  --t-900:#00251a; --t-800:#00382e; --t-700:#004d40; --t-600:#00695c;
+  --t-500:#00897b; --t-400:#26a69a; --t-300:#4db6ac; --t-100:#b2dfdb; --t-50:#e0f2f1;
+
+  /* Gold */
+  --gold-700:#8d6a0a; --gold-600:#b89323; --gold-500:#d4af37;
+  --gold-400:#e6c254; --gold-100:#fbf3da;
+
+  /* Warm neutrals */
+  --cream:#f6f2ea; --cream-2:#efe9dd; --sand:#e9e2d3; --paper:#fffdf9;
+  --ink:#15302a; --ink-2:#3a514c; --muted:#7c8c87; --muted-2:#9aa8a3;
+  --line:#e8e3d8; --line-2:#eef0e9; --surface:#ffffff;
+
+  /* Sage */
+  --sage:#5d8a6f; --sage-bg:#eef4ef;
+
+  /* Status */
+  --success:#1b5e20; --success-bg:#e8f5e9;
+  --warning:#b35300; --warning-bg:#fff3e0;
+  --danger:#b3261e;  --danger-bg:#fcefee;
+  --info:#0d47a1;    --info-bg:#e8f0fb;
+
+  /* Radius */
+  --r-sm:8px; --r:12px; --r-md:16px; --r-lg:20px; --r-xl:26px; --r-full:999px;
+
+  /* Shadow */
+  --sh-1:0 1px 2px rgba(20,48,42,.05);
+  --sh-2:0 6px 18px -8px rgba(20,48,42,.14), 0 2px 6px -3px rgba(20,48,42,.08);
+  --sh-3:0 18px 40px -18px rgba(20,48,42,.22);
+
+  /* Font */
+  --font:'Sarabun', system-ui, -apple-system, sans-serif;
+  --mono:'JetBrains Mono', ui-monospace, monospace;
+
+  /* Spacing scale */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px;
+
+  /* Layout */
+  --header-h:60px;
+  --content-max:1120px;
+  --tap:44px;          /* touch target ขั้นต่ำ */
+
+  /* Focus */
+  --focus:0 0 0 3px var(--t-100), 0 0 0 5px var(--t-600);
+}
+
+/* ---------- Dark mode ---------- */
+[data-theme="dark"] {
+  --cream:#141a19; --cream-2:#1a2220; --sand:#222c29; --paper:#171f1d;
+  --surface:#1c2523;
+  --ink:#e8efec; --ink-2:#c2cfcb; --muted:#96a5a0; --muted-2:#7d8c87;
+  --line:#2c3835; --line-2:#26312e;
+
+  --t-700:#4db6ac; --t-600:#26a69a; --t-500:#4db6ac;
+  --t-50:#1e2b28; --t-100:#26433d;
+
+  --sage:#8fbfa0; --sage-bg:#1d2b23;
+  --success:#a5d6a7; --success-bg:#1b2c1d;
+  --warning:#ffb74d; --warning-bg:#33240f;
+  --danger:#ef9a9a;  --danger-bg:#33201e;
+  --info:#90caf9;    --info-bg:#15263c;
+  --gold-700:#e6c254; --gold-100:#332b12;
+
+  --sh-1:0 1px 2px rgba(0,0,0,.4);
+  --sh-2:0 6px 18px -8px rgba(0,0,0,.6), 0 2px 6px -3px rgba(0,0,0,.4);
+  --sh-3:0 18px 40px -18px rgba(0,0,0,.7);
+  --focus:0 0 0 3px var(--t-100), 0 0 0 5px var(--t-400);
+}

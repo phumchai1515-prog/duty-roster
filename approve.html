@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>อนุมัติเวร · เวรตรวจการ</title>
+<meta name="theme-color" content="#004d40">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/login.css">
+<script src="assets/js/env.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">ข้ามไปยังเนื้อหาหลัก</a>
+<div id="shell"></div>
+
+<main id="main">
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <h1>อนุมัติเวร</h1>
+        <p class="caption" id="pending-count">—</p>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost" id="refresh-btn" type="button">รีเฟรช</button>
+      <button class="btn btn-primary" id="approve-month-btn" type="button">อนุมัติทั้งเดือนนี้</button>
+    </div>
+
+    <div id="page-alert" class="alert error hidden" role="alert"></div>
+
+    <div class="table-wrap">
+      <table class="data" id="pending-table">
+        <caption class="sr-only">รายการเวรที่รออนุมัติ</caption>
+        <thead>
+          <tr>
+            <th scope="col">วันที่</th>
+            <th scope="col">ผู้ขอปฏิบัติงาน</th>
+            <th scope="col">ช่วงเวลา</th>
+            <th scope="col">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="pending-body">
+          <tr><td colspan="4" class="empty">กำลังโหลด…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <h2>จำนวนเวรต่อคน</h2>
+        <p class="caption">นับตั้งแต่ 1 ปีย้อนหลังถึง 1 ปีข้างหน้า · นับเวรบ่าย 1 ครั้งเป็น 1 คืน</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="data">
+        <caption class="sr-only">สรุปจำนวนเวรของพยาบาลแต่ละคน</caption>
+        <thead>
+          <tr>
+            <th scope="col">ชื่อ-นามสกุล</th>
+            <th scope="col">จำนวนเวร</th>
+          </tr>
+        </thead>
+        <tbody id="workload-body">
+          <tr><td colspan="2" class="empty">กำลังโหลด…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<div id="toast-region" role="status" aria-live="polite"></div>
+<script type="module" src="assets/js/approve-page.js"></script>
+</body>
+</html>

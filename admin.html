@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ตั้งค่า · เวรตรวจการ</title>
+<meta name="theme-color" content="#004d40">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/login.css">
+<script src="assets/js/env.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">ข้ามไปยังเนื้อหาหลัก</a>
+<div id="shell"></div>
+
+<main id="main">
+  <div id="page-alert" class="alert error hidden" role="alert"></div>
+
+  <section class="card" aria-labelledby="nurses-title">
+    <div class="card-head">
+      <div>
+        <h1 id="nurses-title">รายชื่อพยาบาลตรวจการ</h1>
+        <p class="caption">ปิดใช้งานคนที่ย้ายออก แทนการลบ เพื่อรักษาประวัติเวรเดิมไว้</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data">
+        <caption class="sr-only">รายชื่อพยาบาลตรวจการทั้งหมด</caption>
+        <thead>
+          <tr>
+            <th scope="col">ชื่อ-นามสกุล</th>
+            <th scope="col">สิทธิ์</th>
+            <th scope="col">สถานะ</th>
+            <th scope="col">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="nurses-body">
+          <tr><td colspan="4" class="empty">กำลังโหลด…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="holidays-title">
+    <div class="card-head">
+      <div>
+        <h2 id="holidays-title">วันหยุดราชการ</h2>
+        <p class="caption">วันที่กำหนดไว้จะเปิดให้จองเวรเช้าเพิ่ม และแสดงแถบสีในปฏิทิน</p>
+      </div>
+    </div>
+
+    <form id="holiday-form" class="row" style="align-items:flex-end">
+      <div class="field" style="flex:1 1 160px">
+        <label for="holiday-date">วันที่</label>
+        <input id="holiday-date" type="date" required>
+      </div>
+      <div class="field" style="flex:2 1 220px">
+        <label for="holiday-name">ชื่อวันหยุด</label>
+        <input id="holiday-name" type="text" maxlength="80" placeholder="เช่น วันสงกรานต์" required>
+      </div>
+      <button class="btn btn-primary" type="submit">เพิ่ม</button>
+    </form>
+
+    <div class="table-wrap" style="margin-top:16px">
+      <table class="data">
+        <caption class="sr-only">รายการวันหยุดราชการ</caption>
+        <thead>
+          <tr>
+            <th scope="col">วันที่</th>
+            <th scope="col">ชื่อวันหยุด</th>
+            <th scope="col">จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="holidays-body">
+          <tr><td colspan="3" class="empty">กำลังโหลด…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="export-title">
+    <div class="card-head">
+      <div>
+        <h2 id="export-title">ส่งออกข้อมูล</h2>
+        <p class="caption">ไฟล์ CSV เปิดด้วย Excel ภาษาไทยได้ทันที (มี BOM)</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field" style="flex:1 1 140px">
+        <label for="export-year">ปี พ.ศ.</label>
+        <select id="export-year"></select>
+      </div>
+      <button class="btn btn-ghost" id="export-btn" type="button">ดาวน์โหลด CSV ทั้งปี</button>
+    </div>
+  </section>
+</main>
+
+<div id="toast-region" role="status" aria-live="polite"></div>
+<script type="module" src="assets/js/admin-page.js"></script>
+</body>
+</html>

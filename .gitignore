@@ -1,0 +1,18 @@
+# ความลับ — ห้ามขึ้น repo เด็ดขาด
+.env
+.env.*
+*.service-role*
+supabase/.temp/
+
+# ระบบปฏิบัติการ / เครื่องมือ
+.DS_Store
+Thumbs.db
+node_modules/
+*.log
+
+# ไฟล์ต้นฉบับที่มีข้อมูลบุคคล (ใช้ generate seed เท่านั้น ไม่ต้องขึ้น repo)
+*.xlsx
+
+# ข้อมูลบุคคล — สร้างใหม่ได้ด้วย scripts/generate-seed.py จากไฟล์ .xlsx ต้นฉบับ
+# ถ้า repo เป็น private และต้องการให้ทีมใช้ร่วมกัน ลบบรรทัดนี้ออกได้
+supabase/04_seed.sql

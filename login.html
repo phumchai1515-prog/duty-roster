@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เข้าสู่ระบบ · เวรตรวจการ</title>
+<meta name="theme-color" content="#004d40">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/login.css">
+<script src="assets/js/env.js"></script>
+</head>
+<body class="login-body">
+<main class="login-shell">
+  <div class="login-card card" id="login-card">
+    <div class="login-head">
+      <div class="login-mark" aria-hidden="true">เวร</div>
+      <h1>ระบบจองเวรตรวจการ</h1>
+      <p class="caption" id="org-name">ตารางปฏิบัติงานนอกเวลาราชการและในวันหยุดราชการ</p>
+    </div>
+
+    <div id="login-error" class="alert error hidden" role="alert"></div>
+
+    <form id="login-form" novalidate>
+      <div class="field">
+        <label for="nurse-select">ชื่อ-นามสกุล</label>
+        <select id="nurse-select" name="nurse" required autocomplete="username">
+          <option value="">— กำลังโหลดรายชื่อ —</option>
+        </select>
+        <p class="field-hint">เลือกชื่อของคุณจากรายชื่อพยาบาลตรวจการ</p>
+      </div>
+
+      <div class="field">
+        <label for="pin-input">รหัส PIN (6 หลัก)</label>
+        <input
+          id="pin-input" name="pin" type="password" inputmode="numeric"
+          autocomplete="current-password" maxlength="6" pattern="\d{6}"
+          placeholder="••••••" class="pin-input mono" required>
+        <p class="field-hint">เข้าครั้งแรกใช้ PIN ที่หัวหน้าเวรแจ้ง แล้วระบบจะให้ตั้งใหม่</p>
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit" id="submit-btn">
+        เข้าสู่ระบบ
+      </button>
+    </form>
+  </div>
+
+  <p class="login-foot caption">
+    ลืมรหัส PIN? ติดต่อหัวหน้าเวรเพื่อรีเซ็ต
+  </p>
+</main>
+
+<script type="module" src="assets/js/login.js"></script>
+</body>
+</html>

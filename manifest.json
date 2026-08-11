@@ -1,0 +1,16 @@
+{
+  "name": "ระบบจองเวรตรวจการ",
+  "short_name": "เวรตรวจการ",
+  "description": "จองเวรตรวจการ อนุมัติ และพิมพ์เอกสารราชการได้ทันที",
+  "lang": "th",
+  "dir": "ltr",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f2ea",
+  "theme_color": "#004d40",
+  "icons": [
+    { "src": "assets/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
