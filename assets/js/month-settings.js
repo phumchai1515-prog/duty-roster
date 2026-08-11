@@ -4,9 +4,16 @@
 import { getClient } from './supabase.js';
 import { toBuddhistYear } from './thai.js';
 
-/** โควตาตั้งต้น — กุมภาพันธ์ 1 เวร เดือนอื่น 2 เวร (ต้องตรงกับ default_shift_quota ใน SQL) */
-export const FEBRUARY = 2;
-export const defaultQuota = (month) => (month === FEBRUARY ? 1 : 2);
+/**
+ * โควตาตั้งต้น 2 เวร/คน/เดือน ทุกเดือนรวมกุมภาพันธ์
+ * (ต้องตรงกับ default_shift_quota ใน SQL)
+ *
+ * กุมภาพันธ์เคยตั้งไว้ 1 เวร แต่ผู้ขึ้นเวร 18 คน × 1 = 18 ที่นั่ง
+ * ไม่พอกับ 28 วัน จึงขาดผู้ปฏิบัติงาน 10 วัน — แก้เป็น 2 เมื่อ 2026-08-11
+ * ผู้ดูแลระบบปรับรายเดือนได้เองที่หน้า "ผู้ดูแลระบบ"
+ */
+export const DEFAULT_QUOTA = 2;
+export const defaultQuota = () => DEFAULT_QUOTA;
 
 /**
  * อ่านค่าตั้งค่าของเดือน (ปี ค.ศ.) — ถ้ายังไม่เคยตั้งจะได้ค่าตั้งต้นกลับมา
