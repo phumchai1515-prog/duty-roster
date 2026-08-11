@@ -151,7 +151,7 @@ export function renderStatStrip(summary) {
       <span>วันว่าง</span>
     </div>
     <div class="stat ${overQuota ? 'over' : 'mine'}">
-      <b>${summary.mine}<span aria-hidden="true" style="font-size:15px;opacity:.5">/${summary.quota}</span></b>
+      <b>${summary.mine}<span class="quota-of" aria-hidden="true">/${summary.quota}</span></b>
       <span>เวรของฉัน</span>
     </div>
     <div class="stat">
