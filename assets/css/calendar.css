@@ -119,7 +119,7 @@
 
 .calendar-grid {
   display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
-  background: var(--line-2);
+  background: var(--line);
   gap: 1px;                    /* ช่องว่าง 1px + พื้นหลังสีเส้น = เส้นตารางจริง */
   border-bottom: 1px solid var(--line);
 }
@@ -151,8 +151,9 @@
 .day:focus-visible { z-index: 2; box-shadow: var(--focus); }
 .day:disabled { cursor: not-allowed; opacity: .5; }
 
-.day.blank { background: var(--cream-2); cursor: default; pointer-events: none; }
-.day.weekend { background: var(--paper); }
+.day.blank { background: var(--cream-2); cursor: default; pointer-events: none; opacity: .55; }
+/* คอลัมน์เสาร์-อาทิตย์ลงแถบอุ่น เหมือนแถบเทาในเอกสารที่พิมพ์ออกมา */
+.day.weekend { background: var(--cream); }
 .day.holiday { background: var(--gold-100); }
 .day.holiday::before { background: var(--gold-500); }
 
